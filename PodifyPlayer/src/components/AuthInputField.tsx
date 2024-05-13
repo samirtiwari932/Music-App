@@ -12,6 +12,7 @@ import colors from 'src/utilis/color';
 
 interface Props {
     label?: string;
+    value?: string
     placeholder?: string;
     keyboardType?: TextInputProps['keyboardType'];
     autoCapitalize?: TextInputProps['autoCapitalize'];
@@ -23,6 +24,7 @@ interface Props {
 const AuthInputField: FC<Props> = props => {
     const {
         label,
+        value,
         placeholder,
         autoCapitalize,
         keyboardType,
@@ -39,6 +41,7 @@ const AuthInputField: FC<Props> = props => {
                 autoCapitalize={autoCapitalize}
                 secureTextEntry={secureTextEntry}
                 onChangeText={onChange}
+                value={value}
             />
         </View>
     );
