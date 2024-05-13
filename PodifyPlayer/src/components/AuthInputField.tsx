@@ -14,6 +14,7 @@ interface Props {
     label?: string;
     value?: string
     placeholder?: string;
+    errorMsg?: string
     keyboardType?: TextInputProps['keyboardType'];
     autoCapitalize?: TextInputProps['autoCapitalize'];
     secureTextEntry?: boolean;
@@ -30,11 +31,15 @@ const AuthInputField: FC<Props> = props => {
         keyboardType,
         secureTextEntry,
         containerStyle,
+        errorMsg,
         onChange
     } = props;
     return (
         <View style={[styles.container, containerStyle]}>
-            <Text style={styles.label}>{label}</Text>
+            <View style={styles.labelContainer}>
+                <Text style={styles.label}>{label}</Text>
+                <Text style={styles.errorMsg}>{errorMsg}</Text>
+            </View>
             <AppInput
                 placeholder={placeholder}
                 keyboardType={keyboardType}
@@ -44,14 +49,23 @@ const AuthInputField: FC<Props> = props => {
                 value={value}
             />
         </View>
+
     );
 };
 
 const styles = StyleSheet.create({
     container: {},
+    labelContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 5,
+    },
     label: {
         color: colors.CONTRAST,
-        padding: 5,
+    },
+    errorMsg: {
+        color: colors.ERROR,
     },
 });
 

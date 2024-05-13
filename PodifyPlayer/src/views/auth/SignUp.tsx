@@ -1,13 +1,24 @@
 import AuthInputField from '@components/AuthInputField';
 import { Formik } from 'formik';
 import { FC, useState } from 'react';
+import colors from 'src/utilis/color';
+import * as yup from "yup"
 import {
     Button,
     SafeAreaView,
     StyleSheet,
     View,
 } from 'react-native';
-import colors from 'src/utilis/color';
+
+const signupSchema = yup.object({
+    name: yup.string().trim("Name is missing!").min(3, "Name is too short!").required("Name is required!"),
+    email: yup.string().trim("Email is missing!").email("Invalid email !").required("Email  is required!"),
+    password: yup.string()
+        .trim("password  is missing!")
+        .min(8, "password is too short!")
+        .matches(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/, "Password is too simple!")
+        .required("Password is required!")
+})
 
 interface Props { }
 
@@ -31,9 +42,9 @@ const SignUp: FC<Props> = props => {
                     console.warn(values);
                 }}
                 initialValues={initialValues}
-            // validationSchema={}
+                validationSchema={signupSchema}
             >
-                {({ handleSubmit, handleChange, values }) => {
+                {({ handleSubmit, handleChange, errors, values }) => {
                     const handleSignUp = () => {
                         handleSubmit();
                     };
@@ -46,6 +57,7 @@ const SignUp: FC<Props> = props => {
                                 containerStyle={styles.marginBottom}
                                 onChange={handleChange('name')}
                                 value={values.name}
+                                errorMsg={errors.name}
                             />
                             <AuthInputField
                                 placeholder="john@email.com"
@@ -55,6 +67,7 @@ const SignUp: FC<Props> = props => {
                                 containerStyle={styles.marginBottom}
                                 onChange={handleChange('email')}
                                 value={values.email}
+                                errorMsg={errors.email}
                             />
                             <AuthInputField
                                 placeholder="********"
@@ -64,6 +77,7 @@ const SignUp: FC<Props> = props => {
                                 containerStyle={styles.marginBottom}
                                 onChange={handleChange('password')}
                                 value={values.password}
+                                errorMsg={errors.password}
                             />
                             <Button onPress={handleSignUp} title="Sign up" />
                         </View>
