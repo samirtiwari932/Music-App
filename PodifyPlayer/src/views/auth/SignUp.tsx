@@ -5,6 +5,7 @@ import colors from 'src/utilis/color';
 import * as yup from "yup"
 import {
     Button,
+    Image,
     SafeAreaView,
     StyleSheet,
     View,
@@ -13,6 +14,9 @@ import Form from '@components/form/Index';
 import SubmitBtn from '@components/form/SubmitBtn';
 import Icon from 'react-native-vector-icons/Entypo';
 import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
+import AppLink from '@ui/AppLink';
+import CircleUi from '@ui/CircleUi';
+
 
 const signupSchema = yup.object({
     name: yup.string().trim("Name is missing!").min(3, "Name is too short!").required("Name is required!"),
@@ -42,6 +46,11 @@ const SignUp: FC<Props> = props => {
 
     return (
         <View style={styles.container}>
+            <CircleUi size={200} position='top-left' />
+            <CircleUi size={100} position='top-right' />
+            <CircleUi size={100} position='bottom-left' />
+            <CircleUi size={200} position='bottom-right' />
+
             <Form
                 onSubmit={values => {
                     console.log(values);
@@ -76,6 +85,10 @@ const SignUp: FC<Props> = props => {
                         onRightIconPress={togglePasswordView}
                     />
                     <SubmitBtn title='Sign up' />
+                    <View style={styles.linkContainer}>
+                        <AppLink title='Forget Password ?' />
+                        <AppLink title='Sign In' />
+                    </View>
                 </View>
 
             </Form>
@@ -97,6 +110,12 @@ const styles = StyleSheet.create({
     marginBottom: {
         marginBottom: 20,
     },
+    linkContainer: {
+        flexDirection: 'row',
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginTop: 20
+    }
 });
 
 export default SignUp;
