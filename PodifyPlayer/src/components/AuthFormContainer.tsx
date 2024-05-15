@@ -18,7 +18,7 @@ const AuthFormContainer = ({ children, heading, subHeading }: Props) => {
             <View style={styles.headerContainer}>
                 <Image source={require('../assets/one.png')} />
                 <Text style={styles.heading}>{heading}</Text>
-                <Text style={styles.subHeading}>{subHeading}.</Text>
+                <Text style={styles.subHeading}>{subHeading}</Text>
                 {children}
             </View>
         </View>
