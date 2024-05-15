@@ -3,38 +3,32 @@ import AuthInputField from '@components/form/AuthInputField';
 import Form from '@components/form/Index';
 import SubmitBtn from '@components/form/SubmitBtn';
 import AppLink from '@ui/AppLink';
-import CircleUi from '@ui/CircleUi';
 import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
 import { FC, useState } from 'react';
 import {
-    Image,
     StyleSheet,
-    Text,
     View
 } from 'react-native';
-import colors from 'src/utilis/color';
 import * as yup from "yup";
 
 
 const signupSchema = yup.object({
-    name: yup.string().trim("Name is missing!").min(3, "Name is too short!").required("Name is required!"),
     email: yup.string().trim("Email is missing!").email("Invalid email !").required("Email  is required!"),
     password: yup.string()
         .trim("password  is missing!")
         .min(8, "password is too short!")
-        .matches(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/, "Password is too simple!")
-        .required("Password is required!")
+        .required('Password is required!')
 })
 
 interface Props { }
 
 const initialValues = {
-    name: '',
+
     email: '',
     password: '',
 };
 
-const SignUp: FC<Props> = props => {
+const SignIn: FC<Props> = props => {
 
     const [secureEntry, setSecureEntry] = useState(true)
 
@@ -51,15 +45,10 @@ const SignUp: FC<Props> = props => {
             initialValues={initialValues}
             validationSchema={signupSchema}
         >
-            <AuthFormContainer heading='Welcome' subHeading="Let's get started by creating your accountS">
+            <AuthFormContainer heading='Welcome Back' >
 
                 <View style={styles.formContainer}>
-                    <AuthInputField
-                        name='name'
-                        placeholder="John Doe"
-                        label="Name"
-                        containerStyle={styles.marginBottom}
-                    />
+
                     <AuthInputField
                         name='email'
                         placeholder="john@email.com"
@@ -79,10 +68,10 @@ const SignUp: FC<Props> = props => {
                         rightIcon={<PasswordVisibilityIcon privateIcon={secureEntry} />}
                         onRightIconPress={togglePasswordView}
                     />
-                    <SubmitBtn title='Sign up' />
+                    <SubmitBtn title='Sign In' />
                     <View style={styles.linkContainer}>
                         <AppLink title='Forget Password ?' />
-                        <AppLink title='Sign In' />
+                        <AppLink title='Sign up' />
                     </View>
                 </View>
 
@@ -108,4 +97,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SignUp;
+export default SignIn;
