@@ -1,36 +1,77 @@
-import AuthFormContainer from '@components/AuthFormContainer';
-import AuthInputField from '@components/form/AuthInputField';
-import Form from '@components/form/Index';
-import SubmitBtn from '@components/form/SubmitBtn';
-import AppButton from '@ui/AppButton';
+import { FC, useEffect, useRef, useState } from 'react';
+import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
 import AppLink from '@ui/AppLink';
+import AuthFormContainer from '@components/AuthFormContainer';
 import OTPField from '@ui/OTPField';
-import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
-import { FC, useState } from 'react';
-import {
-    StyleSheet,
-    View
-} from 'react-native';
-import colors from 'src/utilis/color';
-import * as yup from "yup";
+import AppButton from '@ui/AppButton';
 
 interface Props { }
 
-const otpFields = new Array(6).fill('s')
+const otpFields = new Array(6).fill('');
 
 const Verification: FC<Props> = props => {
+    const [otp, setOtp] = useState([...otpFields]);
+    const [activeOtpIndex, setActiveOtpIndex] = useState(0);
+
+    const inputRef = useRef<TextInput>(null);
+
+    const handleChange = (value: string, index: number) => {
+        const newOtp = [...otp];
+
+        if (value === 'Backspace') {
+            // moves to the previous only if the field is empty
+            if (!newOtp[index]) setActiveOtpIndex(index - 1);
+            newOtp[index] = '';
+        } else {
+            // update otp and move to the next
+            setActiveOtpIndex(index + 1);
+            newOtp[index] = value;
+        }
+
+        setOtp([...newOtp]);
+    };
+
+    const handlePaste = (value: string) => {
+        if (value.length === 6) {
+            Keyboard.dismiss()
+            const newOtp = value.split('')
+            setOtp([...newOtp])
+        }
+    }
+
+    const handleSubmit = () => {
+        console.warn(otp)
+    }
+
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, [activeOtpIndex]);
+
     return (
-        <AuthFormContainer heading='Please look at your email'  >
+        <AuthFormContainer heading="Please look at your email.">
             <View style={styles.inputContainer}>
                 {otpFields.map((_, index) => {
-                    return <OTPField key={index} placeholder='*' style={{}} />
+                    return (
+                        <OTPField
+                            ref={activeOtpIndex === index ? inputRef : null}
+                            key={index}
+                            placeholder="*"
+                            onKeyPress={({ nativeEvent }) => {
+                                handleChange(nativeEvent.key, index);
+                            }}
+                            onChangeText={handlePaste}
+                            keyboardType='numeric'
+                            value={otp[index] || ""}
+
+                        />
+                    );
                 })}
             </View>
 
-            <AppButton title='Submit' />
-            <View style={styles.linkContainer}>
-                <AppLink title='Re-send OTP' />
+            <AppButton title="Submit" onPress={handleSubmit} />
 
+            <View style={styles.linkContainer}>
+                <AppLink title="Re-send OTP" />
             </View>
         </AuthFormContainer>
     );
@@ -38,17 +79,17 @@ const Verification: FC<Props> = props => {
 
 const styles = StyleSheet.create({
     inputContainer: {
-        width: "100%",
-        flexDirection: "row",
+        width: '100%',
+        flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: "center",
-        marginBottom: 20
+        alignItems: 'center',
+        marginBottom: 20,
     },
     linkContainer: {
         marginTop: 20,
-        alignItems: "flex-end",
-        width: "100%"
-    }
+        width: '100%',
+        alignItems: 'flex-end',
+    },
 });
 
 export default Verification;

@@ -1,16 +1,19 @@
 import { View, Text, StyleSheet, TextInput, TextInputProps } from 'react-native'
-import React from 'react'
+import React, { forwardRef } from 'react'
 import colors from 'src/utilis/color'
 
-interface Props extends TextInputProps { }
-const OTPField = (props: Props) => {
-    return (
-        <TextInput
-            {...props}
-            style={[styles.input, props.style]}
-            placeholderTextColor={colors.INACTIVE_CONTRAST} />
-    )
+interface Props extends TextInputProps {
+    ref: any
 }
+
+const OTPField = forwardRef<TextInput, Props>((props, ref) => {
+    return (<TextInput
+        {...props}
+        ref={ref}
+        style={[styles.input, props.style]}
+        placeholderTextColor={colors.INACTIVE_CONTRAST} />
+    )
+})
 
 const styles = StyleSheet.create({
     input: {
