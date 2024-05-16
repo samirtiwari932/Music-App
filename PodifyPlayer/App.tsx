@@ -1,11 +1,11 @@
-import OTPField from '@ui/OTPField';
-import LostPassword from '@views/auth/LostPassword';
-import SignIn from '@views/auth/SignIn';
-import Verification from '@views/auth/Verification';
+import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
+import AuthNavigator from 'src/navigation/AuthNavigator';
 
 export default function App() {
   return (
-    <Verification />
+    <NavigationContainer>
+      <AuthNavigator />
+    </NavigationContainer>
   )
 }
