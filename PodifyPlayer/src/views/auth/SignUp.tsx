@@ -16,6 +16,9 @@ import {
 import { AuthStackParamList } from 'src/@types/navigation';
 import colors from 'src/utilis/color';
 import * as yup from "yup";
+import { FormikHelpers } from 'formik';
+import axios from 'axios';
+import client from 'src/api/client';
 
 
 const signupSchema = yup.object({
@@ -29,6 +32,12 @@ const signupSchema = yup.object({
 })
 
 interface Props { }
+
+interface NewUser {
+    name: string,
+    email: string,
+    password: string
+}
 
 const initialValues = {
     name: '',
@@ -47,13 +56,21 @@ const SignUp: FC<Props> = props => {
     const togglePasswordView = () => {
         setSecureEntry(!secureEntry)
     }
+    const handleSubmit = async (values: NewUser, actions: FormikHelpers<NewUser>) => {
+        //we want to send these information to our api 
+        try {
+            const { data } = await client.post('/auth/create', { ...values })
+            console.log(data)
+            navigation.navigate('Verification', { userInfo: data?.user })
+        } catch (error) {
+            console.warn('Sign up error:', error)
+        }
+    }
 
     return (
 
         <Form
-            onSubmit={values => {
-                console.log(values);
-            }}
+            onSubmit={handleSubmit}
             initialValues={initialValues}
             validationSchema={signupSchema}
         >

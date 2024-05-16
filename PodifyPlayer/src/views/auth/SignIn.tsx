@@ -5,12 +5,14 @@ import SubmitBtn from '@components/form/SubmitBtn';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import AppLink from '@ui/AppLink';
 import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
+import { FormikHelpers } from 'formik';
 import { FC, useState } from 'react';
 import {
     StyleSheet,
     View
 } from 'react-native';
 import { AuthStackParamList } from 'src/@types/navigation';
+import client from 'src/api/client';
 import * as yup from "yup";
 
 
@@ -23,6 +25,11 @@ const signupSchema = yup.object({
 })
 
 interface Props { }
+
+interface SignInUser {
+    email: string,
+    password: string,
+}
 
 const initialValues = {
 
@@ -40,12 +47,22 @@ const SignIn: FC<Props> = props => {
         setSecureEntry(!secureEntry)
     }
 
+    const handleSubmit = async (values: SignInUser, actions: FormikHelpers<SignInUser>) => {
+        //we want to send these information to our api 
+        try {
+            const { data } = await client.post('/auth/sign-in', { ...values })
+            console.log(data)
+
+        } catch (error) {
+            console.warn('Sign up error:', error)
+        }
+    }
+
+
     return (
 
         <Form
-            onSubmit={values => {
-                console.log(values);
-            }}
+            onSubmit={handleSubmit}
             initialValues={initialValues}
             validationSchema={signupSchema}
         >
