@@ -5,12 +5,14 @@ import SubmitBtn from '@components/form/SubmitBtn';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import AppLink from '@ui/AppLink';
 import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
+import { FormikHelpers } from 'formik';
 import { FC, useState } from 'react';
 import {
     StyleSheet,
     View
 } from 'react-native';
 import { AuthStackParamList } from 'src/@types/navigation';
+import client from 'src/api/client';
 import * as yup from "yup";
 
 
@@ -21,9 +23,27 @@ const forgetPasswordSchema = yup.object({
 
 interface Props { }
 
+interface InitialValue {
+    email: string
+}
+
 const initialValues = {
     email: '',
 };
+
+const handleSubmit = async (values: InitialValue, actions: FormikHelpers<InitialValue>) => {
+    //we want to send these information to our api 
+    actions.setSubmitting(true)
+    try {
+        const { data } = await client.post('/auth/forget-password', { ...values })
+        console.log(data)
+
+    } catch (error) {
+        console.warn('Lost Password error :', error)
+    }
+    actions.setSubmitting(false)
+
+}
 
 const LostPassword: FC<Props> = props => {
 
@@ -31,9 +51,7 @@ const LostPassword: FC<Props> = props => {
     return (
 
         <Form
-            onSubmit={values => {
-                console.log(values);
-            }}
+            onSubmit={handleSubmit}
             initialValues={initialValues}
             validationSchema={forgetPasswordSchema}
         >
