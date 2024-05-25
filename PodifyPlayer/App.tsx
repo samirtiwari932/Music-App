@@ -1,12 +1,15 @@
 import { NavigationContainer } from '@react-navigation/native';
 import Verification from '@views/auth/Verification';
 import React from 'react';
+import { Provider } from 'react-redux';
+import AppNavigator from 'src/navigation';
 import AuthNavigator from 'src/navigation/AuthNavigator';
+import store from "src/store"
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <AuthNavigator />
-    </NavigationContainer>
+    <Provider store={store}>
+      <AppNavigator />
+    </Provider>
   )
 }

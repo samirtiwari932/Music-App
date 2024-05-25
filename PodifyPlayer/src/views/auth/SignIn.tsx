@@ -11,8 +11,10 @@ import {
     StyleSheet,
     View
 } from 'react-native';
+import { useDispatch } from 'react-redux';
 import { AuthStackParamList } from 'src/@types/navigation';
 import client from 'src/api/client';
+import { updateLoggedInState, updateProfile } from 'src/store/auth';
 import * as yup from "yup";
 
 
@@ -43,6 +45,8 @@ const SignIn: FC<Props> = props => {
 
     const navigation = useNavigation<NavigationProp<AuthStackParamList>>()
 
+    const dispatch = useDispatch()
+
     const togglePasswordView = () => {
         setSecureEntry(!secureEntry)
     }
@@ -52,7 +56,8 @@ const SignIn: FC<Props> = props => {
         actions.setSubmitting(true)
         try {
             const { data } = await client.post('/auth/sign-in', { ...values })
-            console.log(data)
+            dispatch(updateProfile(data.profile))
+            dispatch(updateLoggedInState(true))
 
         } catch (error) {
             console.warn('Sign up error:', error)
