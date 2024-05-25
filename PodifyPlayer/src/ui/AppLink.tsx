@@ -5,10 +5,11 @@ import colors from 'src/utilis/color'
 interface Props {
     title: string
     onPress?(): void
+    active?: boolean
 }
-const AppLink = ({ title, onPress }: Props) => {
+const AppLink = ({ title, onPress, active = true }: Props) => {
     return (
-        <Pressable onPress={onPress}>
+        <Pressable onPress={active ? onPress : null} style={{ opacity: active ? 1 : 0.4 }}>
             <Text style={styles.title}>
                 {title}
             </Text>

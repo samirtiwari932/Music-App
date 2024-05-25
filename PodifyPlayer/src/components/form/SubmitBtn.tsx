@@ -8,14 +8,14 @@ interface Props {
 }
 const SubmitBtn = (props: Props) => {
 
-    const { handleSubmit } = useFormikContext()
+    const { handleSubmit, isSubmitting } = useFormikContext()
 
     const handleOnPress = () => {
         handleSubmit();
     }
 
     return (
-        <AppButton onPress={handleOnPress} title={props.title} />
+        <AppButton busy={isSubmitting} onPress={handleOnPress} title={props.title} />
     )
 }
 

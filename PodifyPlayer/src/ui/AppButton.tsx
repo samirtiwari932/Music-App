@@ -1,17 +1,22 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native'
 import React from 'react'
 import colors from 'src/utilis/color'
+import Loader from './Loader'
 
 interface Props {
     title: string
     onPress?(): void
+    busy: boolean
 }
-const AppButton = ({ title, onPress }: Props) => {
+const AppButton = ({ title, busy, onPress }: Props) => {
     return (
         <Pressable onPress={onPress} style={styles.container}>
-            <Text style={styles.title}>
+            {!busy ? <Text style={styles.title}>
                 {title}
-            </Text>
+            </Text> :
+
+                <Loader />
+            }
         </Pressable>
     )
 }
