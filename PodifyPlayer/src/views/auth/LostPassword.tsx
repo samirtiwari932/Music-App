@@ -39,7 +39,7 @@ const handleSubmit = async (values: InitialValue, actions: FormikHelpers<Initial
         console.log(data)
 
     } catch (error) {
-        console.warn('Lost Password error :', error)
+        console.log('Lost Password error :', error)
     }
     actions.setSubmitting(false)
 

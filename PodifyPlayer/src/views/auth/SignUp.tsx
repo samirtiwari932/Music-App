@@ -65,7 +65,7 @@ const SignUp: FC<Props> = props => {
             console.log(data)
             navigation.navigate('Verification', { userInfo: data?.user })
         } catch (error) {
-            console.warn('Sign up error:', error)
+            console.log('Sign up error:', error)
         }
         actions.setSubmitting(false)
 

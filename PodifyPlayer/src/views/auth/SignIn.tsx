@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux';
 import { AuthStackParamList } from 'src/@types/navigation';
 import client from 'src/api/client';
 import { updateLoggedInState, updateProfile } from 'src/store/auth';
+import { Keys, saveToAsyncStorage } from 'src/utilis/asyncStorage';
 import * as yup from "yup";
 
 
@@ -56,11 +57,13 @@ const SignIn: FC<Props> = props => {
         actions.setSubmitting(true)
         try {
             const { data } = await client.post('/auth/sign-in', { ...values })
+
+            await saveToAsyncStorage(Keys.Auth_Token, data.token)
             dispatch(updateProfile(data.profile))
             dispatch(updateLoggedInState(true))
 
         } catch (error) {
-            console.warn('Sign up error:', error)
+            console.log('Sign up error:', error)
         }
         actions.setSubmitting(false)
 
