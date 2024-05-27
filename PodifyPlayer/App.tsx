@@ -1,3 +1,4 @@
+import AppContainer from '@components/AppContainer';
 import { NavigationContainer } from '@react-navigation/native';
 import Verification from '@views/auth/Verification';
 import React from 'react';
@@ -9,7 +10,10 @@ import store from "src/store"
 export default function App() {
   return (
     <Provider store={store}>
-      <AppNavigator />
+      <AppContainer>
+
+        <AppNavigator />
+      </AppContainer>
     </Provider>
   )
 }

@@ -6,11 +6,14 @@ import Loader from './Loader'
 interface Props {
     title: string
     onPress?(): void
-    busy: boolean
+    busy?: boolean
+    borderRadius?: number
 }
-const AppButton = ({ title, busy, onPress }: Props) => {
+const AppButton = ({ title, busy, onPress, borderRadius }: Props) => {
     return (
-        <Pressable onPress={onPress} style={styles.container}>
+        <Pressable onPress={onPress} style={[styles.container, {
+            borderRadius: borderRadius || 25
+        }]}>
             {!busy ? <Text style={styles.title}>
                 {title}
             </Text> :
@@ -28,7 +31,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.SECONDARY,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: 25
+
     },
     title: {
         color: colors.CONTRAST,
