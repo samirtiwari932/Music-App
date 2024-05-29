@@ -3,23 +3,29 @@ import React from 'react'
 import colors from 'src/utilis/color'
 
 interface Props {
-    progress: number
+    progress: number,
+
 }
 const Progress = ({ progress }: Props) => {
     return (
-        <>
-            <Text style={styles.title}>{`${progress}%`}</Text>
+        <View style={styles.container}>
             <View style={[styles.progressBar, { width: `${progress}%` }]} />
-        </>
+
+            <Text style={styles.title}>{`${progress}%`}</Text>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {},
+    container: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: "space-between"
+    },
     title: {
         color: colors.CONTRAST,
         paddingVertical: 2,
-        alignSelf: 'flex-end'
+        // alignSelf: 'flex-end'
     },
     progressBar: {
         height: 10,
@@ -27,5 +33,5 @@ const styles = StyleSheet.create({
         borderRadius: 5
     }
 })
-//
+
 export default Progress 

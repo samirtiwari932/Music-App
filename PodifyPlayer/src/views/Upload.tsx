@@ -7,6 +7,7 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-
 import { DocumentPickerOptions, DocumentPickerResponse, types } from 'react-native-document-picker'
 import MaterialComIcon from "react-native-vector-icons/MaterialCommunityIcons"
 import client from 'src/api/client'
+import { mapRange } from 'src/utilis/Math'
 import { Keys, getFromAsyncStorage } from 'src/utilis/asyncStorage'
 import { categories } from 'src/utilis/categories'
 import colors from 'src/utilis/color'
@@ -23,6 +24,8 @@ const defaultForm: FormFileds = {
     title: "",
     category: "",
     about: "",
+    file: undefined,
+    poster: undefined
 }
 
 const audioInfoSchema = yup.object().shape({
@@ -47,8 +50,11 @@ interface Props { }
 const Upload = (props: Props) => {
     const [showCategoryModal, setshowCategoryModal] = useState(false)
     const [audioInfo, setAudioInfo] = useState({ ...defaultForm })
+    const [uploadProgress, setUploadProgress] = useState(0)
+    const [busy, setBusy] = useState(false)
 
     const handleUpload = async () => {
+        setBusy(true)
         try {
 
             const formData = new FormData()
@@ -71,14 +77,30 @@ const Upload = (props: Props) => {
                     uri: finalData.poster.uri
                 })
             }
+
             const token = await getFromAsyncStorage(Keys.Auth_Token)
 
             const { data } = await client.post('/audio/create', formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "multipart/form-data"
-                }
+                },
+                onUploadProgress(progressEvent) {
+                    const uploaded = mapRange({
+                        inputMin: 0,
+                        inputMax: progressEvent.total || 0,
+                        outputMin: 0,
+                        outputMax: 100,
+                        inputValue: progressEvent.loaded
+                    })
+                    if (uploaded >= 100) {
+                        setAudioInfo({ ...defaultForm })
+                        setBusy(false)
+                    }
+                    setUploadProgress(Math.floor(uploaded))
+                },
             })
+
             console.log(data);
 
         } catch (error) {
@@ -89,6 +111,7 @@ const Upload = (props: Props) => {
                 console.log(error)
             }
         }
+        setBusy(false)
     }
     return (
         <ScrollView style={styles.container}>
@@ -123,8 +146,7 @@ const Upload = (props: Props) => {
                     style={styles.input}
                     onChangeText={(text) => {
                         setAudioInfo({ ...audioInfo, title: text })
-                    }}
-                />
+                    }} value={audioInfo.title} />
 
                 <Pressable
                     onPress={() => {
@@ -141,7 +163,7 @@ const Upload = (props: Props) => {
                     numberOfLines={10}
                     onChangeText={(text) => {
                         setAudioInfo({ ...audioInfo, about: text })
-                    }}
+                    }} value={audioInfo.about}
                 />
                 <CategorySelector
                     visible={showCategoryModal}
@@ -159,10 +181,10 @@ const Upload = (props: Props) => {
                 />
 
                 <View style={{ marginVertical: 20 }} >
-                    <Progress progress={50} />
+                    {busy ? <Progress progress={uploadProgress} /> : null}
                 </View>
 
-                <AppButton borderRadius={7} title='Submit' onPress={handleUpload} />
+                <AppButton busy={busy} borderRadius={7} title='Submit' onPress={handleUpload} />
             </View>
         </ScrollView>
     )
