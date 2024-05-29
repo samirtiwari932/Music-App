@@ -1,6 +1,7 @@
 import CategorySelector from '@components/CategorySelector'
 import FileSelector from '@components/FileSelector'
 import AppButton from '@ui/AppButton'
+import Progress from '@ui/Progress'
 import React, { useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { DocumentPickerOptions, DocumentPickerResponse, types } from 'react-native-document-picker'
@@ -157,7 +158,10 @@ const Upload = (props: Props) => {
                     }}
                 />
 
-                <View style={{ marginBottom: 20 }} />
+                <View style={{ marginVertical: 20 }} >
+                    <Progress progress={50} />
+                </View>
+
                 <AppButton borderRadius={7} title='Submit' onPress={handleUpload} />
             </View>
         </ScrollView>
