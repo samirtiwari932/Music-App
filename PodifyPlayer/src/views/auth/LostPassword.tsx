@@ -36,7 +36,7 @@ const handleSubmit = async (values: InitialValue, actions: FormikHelpers<Initial
     actions.setSubmitting(true)
     try {
         const { data } = await client.post('/auth/forget-password', { ...values })
-        console.log(data)
+
 
     } catch (error) {
         console.log('Lost Password error :', error)
