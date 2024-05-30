@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native'
 import React, { ReactNode } from 'react'
+import Notification from 'src/store/notification'
+import AppNotification from './AppNotification'
 
 interface Props {
     children: ReactNode
@@ -7,6 +9,7 @@ interface Props {
 const AppContainer = ({ children }: Props) => {
     return (
         <SafeAreaView style={styles.container}>
+            <AppNotification />
             {children}
         </SafeAreaView>
     )

@@ -51,4 +51,5 @@ export const {updateLoggedInState, updateProfile, updateBusyState} =
 // );
 
 export const getAuthState = (state: RootState) => state.auth;
+
 export default slice.reducer;
