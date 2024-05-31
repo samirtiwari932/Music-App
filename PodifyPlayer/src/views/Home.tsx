@@ -1,3 +1,4 @@
+import PulseAnimationContainer from '@ui/PulseAnimationContainer'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { useStateFetchLatestAudios } from 'src/hooks/query'
@@ -7,13 +8,14 @@ const Home = (props: Props) => {
 
     const { data, isLoading } = useStateFetchLatestAudios()
 
-    if (isLoading) {
-        return (
-            <View style={styles.container}>
-                <Text style={{ color: 'white', fontSize: 25 }}>Loading ...</Text>
-            </View>
-        )
-    }
+    // if (isLoading) {
+    return (
+        <PulseAnimationContainer>
+            <Text style={{ color: 'white', fontSize: 25 }}>Loading ...</Text>
+        </PulseAnimationContainer>
+
+    )
+    // }
 
     return (
         <View style={styles.container}>
