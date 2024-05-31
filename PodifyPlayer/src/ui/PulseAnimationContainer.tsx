@@ -15,7 +15,7 @@ const PulseAnimationContainer = ({ children }: Props) => {
     })
 
     useEffect(() => {
-        oppacitySharedValue.value = withRepeat(withTiming(0.3, { duration: 1000 }), -1, true)
+        oppacitySharedValue.value = withRepeat(withTiming(0.3, { duration: 1000 }), -1, false)
     }, [])
     return (
         <Animated.View style={oppacity}>
