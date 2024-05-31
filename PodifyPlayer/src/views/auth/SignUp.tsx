@@ -19,6 +19,9 @@ import * as yup from "yup";
 import { FormikHelpers } from 'formik';
 import axios from 'axios';
 import client from 'src/api/client';
+import catchAsyncError from 'src/api/catchError';
+import { updateNotification } from 'src/store/notification';
+import { useDispatch } from 'react-redux';
 
 
 const signupSchema = yup.object({
@@ -46,6 +49,7 @@ const initialValues = {
 };
 
 const SignUp: FC<Props> = props => {
+    const dispatch = useDispatch()
 
     const [secureEntry, setSecureEntry] = useState(true)
 
@@ -64,7 +68,8 @@ const SignUp: FC<Props> = props => {
             const { data } = await client.post('/auth/create', { ...values })
             navigation.navigate('Verification', { userInfo: data?.user })
         } catch (error) {
-            console.log('Sign up error:', error)
+            const errorMessage = catchAsyncError(error)
+            dispatch(updateNotification({ message: errorMessage, type: "error" }))
         }
         actions.setSubmitting(false)
 

@@ -13,8 +13,10 @@ import {
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { AuthStackParamList } from 'src/@types/navigation';
+import catchAsyncError from 'src/api/catchError';
 import client from 'src/api/client';
 import { updateLoggedInState, updateProfile } from 'src/store/auth';
+import { updateNotification } from 'src/store/notification';
 import { Keys, saveToAsyncStorage } from 'src/utilis/asyncStorage';
 import * as yup from "yup";
 
@@ -63,7 +65,8 @@ const SignIn: FC<Props> = props => {
             dispatch(updateLoggedInState(true))
 
         } catch (error) {
-            console.log('Sign up error:', error)
+            const errorMessage = catchAsyncError(error)
+            dispatch(updateNotification({ message: errorMessage, type: "error" }))
         }
         actions.setSubmitting(false)
 

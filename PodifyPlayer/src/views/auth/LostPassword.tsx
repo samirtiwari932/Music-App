@@ -11,8 +11,11 @@ import {
     StyleSheet,
     View
 } from 'react-native';
+import { useDispatch } from 'react-redux';
 import { AuthStackParamList } from 'src/@types/navigation';
+import catchAsyncError from 'src/api/catchError';
 import client from 'src/api/client';
+import { updateNotification } from 'src/store/notification';
 import * as yup from "yup";
 
 
@@ -31,21 +34,24 @@ const initialValues = {
     email: '',
 };
 
-const handleSubmit = async (values: InitialValue, actions: FormikHelpers<InitialValue>) => {
-    //we want to send these information to our api 
-    actions.setSubmitting(true)
-    try {
-        const { data } = await client.post('/auth/forget-password', { ...values })
-
-
-    } catch (error) {
-        console.log('Lost Password error :', error)
-    }
-    actions.setSubmitting(false)
-
-}
 
 const LostPassword: FC<Props> = props => {
+    const dispatch = useDispatch()
+    const handleSubmit = async (values: InitialValue, actions: FormikHelpers<InitialValue>) => {
+        //we want to send these information to our api 
+        actions.setSubmitting(true)
+        try {
+            const { data } = await client.post('/auth/forget-password', { ...values })
+
+
+        } catch (error) {
+            const errorMessage = catchAsyncError(error)
+            dispatch(updateNotification({ message: errorMessage, type: "error" }))
+        }
+        actions.setSubmitting(false)
+
+    }
+
 
     const navigation = useNavigation<NavigationProp<AuthStackParamList>>()
     return (

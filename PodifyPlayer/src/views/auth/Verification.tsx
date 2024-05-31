@@ -9,6 +9,9 @@ import { AuthStackParamList } from 'src/@types/navigation';
 import client from 'src/api/client';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import colors from 'src/utilis/color';
+import catchAsyncError from 'src/api/catchError';
+import { updateNotification } from 'src/store/notification';
+import { useDispatch } from 'react-redux';
 
 type Props = NativeStackScreenProps<AuthStackParamList, "Verification">
 
@@ -25,6 +28,7 @@ const Verification: FC<Props> = ({ route }) => {
 
     const inputRef = useRef<TextInput>(null);
 
+    const dispatch = useDispatch()
     const handleChange = (value: string, index: number) => {
         const newOtp = [...otp];
 
@@ -56,10 +60,12 @@ const Verification: FC<Props> = ({ route }) => {
 
 
     const handleSubmit = async () => {
-        if (!isValidOtp) return
+        if (!isValidOtp) return dispatch(updateNotification({ message: "Invalid Otp", type: "error" }));
         setSubmitting(true)
         try {
             const { data } = await client.post('auth/verify-email', { userId: userInfo.id, token: otp.join('') })
+
+            dispatch(updateNotification({ message: data.message, type: "success" }))
 
             navigation.navigate('SignIn')
         } catch (error) {
@@ -87,6 +93,7 @@ const Verification: FC<Props> = ({ route }) => {
             })
         }, 1000)
 
+
         return () => {
             clearInterval(intervalId)
         }
@@ -98,7 +105,8 @@ const Verification: FC<Props> = ({ route }) => {
         try {
             const { data } = await client.post('/auth/re-verify-email', { userId: userInfo.id })
         } catch (error) {
-            console.log('Requesting for new otp:', error)
+            const errorMessage = catchAsyncError(error)
+            dispatch(updateNotification({ message: errorMessage, type: "error" }))
         }
     }
 

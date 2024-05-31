@@ -6,7 +6,10 @@ import React, { useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { DocumentPickerOptions, DocumentPickerResponse, types } from 'react-native-document-picker'
 import MaterialComIcon from "react-native-vector-icons/MaterialCommunityIcons"
+import { useDispatch } from 'react-redux'
+import catchAsyncError from 'src/api/catchError'
 import client from 'src/api/client'
+import { updateNotification } from 'src/store/notification'
 import { mapRange } from 'src/utilis/Math'
 import { Keys, getFromAsyncStorage } from 'src/utilis/asyncStorage'
 import { categories } from 'src/utilis/categories'
@@ -53,7 +56,9 @@ const Upload = (props: Props) => {
     const [uploadProgress, setUploadProgress] = useState(0)
     const [busy, setBusy] = useState(false)
 
+    const dispatch = useDispatch()
     const handleUpload = async () => {
+
         setBusy(true)
         try {
 
@@ -104,12 +109,8 @@ const Upload = (props: Props) => {
             console.log(data);
 
         } catch (error) {
-            if (error instanceof yup.ValidationError) {
-                console.log("Validation error:", error.message)
-            }
-            else {
-                console.log(error)
-            }
+            const errorMessage = catchAsyncError(error)
+            dispatch(updateNotification({ message: errorMessage, type: "error" }))
         }
         setBusy(false)
     }
