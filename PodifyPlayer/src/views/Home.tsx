@@ -2,7 +2,8 @@ import LatestUpload from '@components/LatestUpload';
 import OptionsModal from '@components/OptionsModal';
 import PlayListModal from '@components/PlayListModal';
 import RecommendedAudios from '@components/RecommendedAudios';
-import { FC, useState } from 'react';
+import PlayListForm from '@components/form/PlayListForm';
+import { AudioHTMLAttributes, FC, useState } from 'react';
 import { View, StyleSheet, Pressable, Text } from 'react-native';
 import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch } from 'react-redux';
@@ -18,6 +19,8 @@ interface Props { }
 const Home: FC<Props> = props => {
     const [showOptions, setShowOptions] = useState(false);
     const [selectedAudio, setSelectedAudio] = useState<AudioData>();
+    const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+    const [showPlaylistForm, setShowPlaylistForm] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -52,6 +55,11 @@ const Home: FC<Props> = props => {
         setShowOptions(true);
     };
 
+    const handleOnAddToPlaylist = () => {
+        setShowOptions(false);
+        setShowPlaylistModal(true)
+    }
+
     return (
         <View style={styles.container}>
             <LatestUpload
@@ -72,7 +80,7 @@ const Home: FC<Props> = props => {
                     setShowOptions(false);
                 }}
                 options={[
-                    { title: 'Add to playlist', icon: 'playlist-music' },
+                    { title: 'Add to playlist', icon: 'playlist-music', onPress: handleOnAddToPlaylist },
                     {
                         title: 'Add to favorite',
                         icon: 'cards-heart',
@@ -92,9 +100,14 @@ const Home: FC<Props> = props => {
                     );
                 }}
             />
-            <PlayListModal visible list={[{ title: "PlayList one", visibility: 'private', id: "1" },
-            { title: "PlayList two", visibility: 'public', id: "2" }
-            ]} />
+            <PlayListModal visible={showPlaylistModal} onRequestClose={() => setShowPlaylistModal(false)} list={[]} onCreateNewPress={() => {
+                setShowPlaylistModal(false)
+                setShowPlaylistForm(true)
+            }} />
+            <PlayListForm visible={showPlaylistForm} onRequestClose={() => setShowPlaylistForm(false)}
+                onSubmit={(value) => {
+                    console.log(value)
+                }} />
         </View>
     );
 };

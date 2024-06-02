@@ -9,24 +9,25 @@ import { Playlist } from 'src/@types/audio'
 interface Props {
     visible: boolean,
     onRequestClose?(): void,
-    list: Playlist[]
+    list: Playlist[],
+    onCreateNewPress(): void
 }
 
 interface ListItemProps {
     title: string,
     icon: ReactNode,
-
+    onPress?(): void
 }
 
-const ListItem = ({ title, icon }: ListItemProps) => {
+const ListItem = ({ title, icon, onPress }: ListItemProps) => {
     return (
-        <Pressable style={styles.listItemContainer}>
+        <Pressable onPress={onPress} style={styles.listItemContainer}>
             {icon}
             <Text style={styles.listItemTitle}>{title} </Text>
         </Pressable>
     )
 }
-const PlayListModal = ({ onRequestClose, visible, list }: Props) => {
+const PlayListModal = ({ onRequestClose, onCreateNewPress, visible, list }: Props) => {
     return (
         <BasicModalContainer visible={visible} onRequestClose={onRequestClose} >
             {/* we want to render playlist here */}
@@ -38,7 +39,8 @@ const PlayListModal = ({ onRequestClose, visible, list }: Props) => {
             </ScrollView>
 
             {/* create playlist new button  */}
-            <ListItem icon={<AntDesign size={20} name='plus' color={colors.PRIMARY} />} title='Create new' />
+            <ListItem icon={<AntDesign size={20} name='plus' color={colors.PRIMARY} />} title='Create new'
+                onPress={onCreateNewPress} />
 
         </BasicModalContainer >
     )
