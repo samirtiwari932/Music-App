@@ -6,17 +6,15 @@ import colors from 'src/utilis/color'
 interface Props {
     title: string;
     poster?: string;
+    onPress?: () => void
+    onLongPress?: () => void
 }
-const AudioCart = ({ title, poster }: Props) => {
+const AudioCart = ({ title, poster, onLongPress, onPress }: Props) => {
     const source = poster ? { uri: poster } : require('../assets/music.jpg')
     return (
         <Pressable
-            onPress={() => {
-                console.log("on audio press")
-            }}
-            onLongPress={() => {
-                console.log("on audio long press")
-            }}
+            onPress={onPress}
+            onLongPress={onLongPress}
             style={styles.container}>
             <Image source={source} style={styles.poster} />
             <Text

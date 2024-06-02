@@ -4,11 +4,15 @@ import { useFetchRecommendedtAudios } from 'src/hooks/query'
 import colors from 'src/utilis/color'
 import GridView from '@ui/GridView'
 import PulseAnimationContainer from '@ui/PulseAnimationContainer'
+import { AudioData } from 'src/@types/audio'
 
-interface Props { }
-const RecommendedAudios = (props: Props) => {
+interface Props {
+    onAudioPress(item: AudioData, data: AudioData[]): void
+    onAudioLongPress(item: AudioData, data: AudioData[]): void
+}
+const RecommendedAudios = ({ onAudioPress, onAudioLongPress }: Props) => {
 
-    const { data, isLoading } = useFetchRecommendedtAudios()
+    const { data = [], isLoading } = useFetchRecommendedtAudios()
 
 
     const getPoster = (poster?: string) => {
@@ -44,7 +48,11 @@ const RecommendedAudios = (props: Props) => {
                 col={3}
                 data={data} renderItem={(item) => {
                     return (
-                        <Pressable>
+                        <Pressable onPress={() => {
+                            onAudioPress(item, data)
+                        }} onLongPress={() => {
+                            onAudioLongPress(item, data)
+                        }}>
                             <Image source={getPoster(item.poster)} style={styles.poster} />
                             <Text
                                 numberOfLines={2}

@@ -1,5 +1,6 @@
+import BasicModalContainer from '@ui/BasicModalContainer'
 import React, { useState } from 'react'
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Pressable, ScrollView, StyleSheet, Text } from 'react-native'
 import MaterialComIcon from "react-native-vector-icons/MaterialCommunityIcons"
 import colors from 'src/utilis/color'
 
@@ -24,51 +25,26 @@ const CategorySelector = <T extends Object>({ visible = false, data, title, rend
     }
 
     return (
-        <Modal onRequestClose={onRequestClose} visible={visible} transparent>
-            <Pressable onPress={onRequestClose} style={styles.backdrop}>
-                <View style={styles.modalContainer}>
-                    <View style={styles.modal}>
-                        <Text style={styles.title}>{title}</Text>
-                        <ScrollView>
-                            {data?.map((item, index) => {
-                                return <Pressable
-                                    onPress={() => handleSelect(item, index)}
-                                    key={index} style={styles.selectorContainer}>
-                                    {selectedIndex === index ? <MaterialComIcon name='radiobox-marked' color={colors.SECONDARY} /> : <MaterialComIcon name='radiobox-blank' color={colors.SECONDARY} />
-                                    }
-                                    {renderItem(item)}
-                                </Pressable>
-                            })}
+        <BasicModalContainer visible={visible} onRequestClose={onRequestClose} >
+            <Text style={styles.title}>{title}</Text>
+            <ScrollView>
+                {data?.map((item, index) => {
+                    return <Pressable
+                        onPress={() => handleSelect(item, index)}
+                        key={index} style={styles.selectorContainer}>
+                        {selectedIndex === index ? <MaterialComIcon name='radiobox-marked' color={colors.SECONDARY} /> : <MaterialComIcon name='radiobox-blank' color={colors.SECONDARY} />
+                        }
+                        {renderItem(item)}
+                    </Pressable>
+                })}
 
-                        </ScrollView>
-                    </View>
-                </View>
-            </Pressable>
-        </Modal >
+            </ScrollView>
+        </BasicModalContainer>
     )
 }
 
 const styles = StyleSheet.create({
     container: {},
-    backdrop: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: colors.INACTIVE_CONTRAST,
-        zIndex: 1
-    },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: "transparent",
-        zIndex: -1
-    },
-    modal: {
-        width: "90%",
-        maxHeight: "50%",
-        borderRadius: 10,
-        padding: 10,
-        backgroundColor: colors.CONTRAST
-    },
     title: {
         fontSize: 18,
         fontWeight: "bold",

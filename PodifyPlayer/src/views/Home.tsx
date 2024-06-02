@@ -8,8 +8,18 @@ interface Props { }
 const Home = (props: Props) => {
     return (
         <View style={styles.container}>
-            <LatestUpload />
-            <RecommendedAudios />
+            <LatestUpload onAudioPress={(item) => {
+                console.log(item)
+            }}
+                onAudioLongPress={() => {
+                    console.log('long press')
+                }} />
+            <RecommendedAudios onAudioPress={(item) => {
+                console.log('audio press', item)
+            }}
+                onAudioLongPress={() => {
+                    console.log('long press')
+                }} />
         </View>
     )
 }
