@@ -60,6 +60,8 @@ const SignIn: FC<Props> = props => {
         try {
             const { data } = await client.post('/auth/sign-in', { ...values })
 
+            console.log(data, "this is the data ")
+
             await saveToAsyncStorage(Keys.Auth_Token, data.token)
             dispatch(updateProfile(data.profile))
             dispatch(updateLoggedInState(true))
@@ -127,7 +129,6 @@ const styles = StyleSheet.create({
 
     formContainer: {
         width: "100%",
-
     },
     marginBottom: {
         marginBottom: 20,
