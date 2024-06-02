@@ -10,7 +10,8 @@ interface Props {
     visible: boolean,
     onRequestClose?(): void,
     list: Playlist[],
-    onCreateNewPress(): void
+    onCreateNewPress(): void,
+    onPlayListPress(item: Playlist): void
 }
 
 interface ListItemProps {
@@ -27,19 +28,27 @@ const ListItem = ({ title, icon, onPress }: ListItemProps) => {
         </Pressable>
     )
 }
-const PlayListModal = ({ onRequestClose, onCreateNewPress, visible, list }: Props) => {
+const PlayListModal = ({ onRequestClose, onPlayListPress, onCreateNewPress, visible, list }: Props) => {
     return (
         <BasicModalContainer visible={visible} onRequestClose={onRequestClose} >
             {/* we want to render playlist here */}
             <ScrollView>
                 {list.map((item) => {
-                    return <ListItem key={item.id} title={item.title} icon={<FontAwesomeIcon size={20} name={item.visibility === "public" ? "globe" : "lock"} color={colors.PRIMARY} />} />
+                    return <ListItem
+                        key={item.id}
+                        title={item.title}
+                        icon={<FontAwesomeIcon size={20} name={item.visibility === "public" ? "globe" : "lock"}
+                            color={colors.PRIMARY} />}
+                        onPress={() => onPlayListPress(item)}
+                    />
                 })}
 
             </ScrollView>
 
             {/* create playlist new button  */}
-            <ListItem icon={<AntDesign size={20} name='plus' color={colors.PRIMARY} />} title='Create new'
+            <ListItem
+                icon={<AntDesign size={20} name='plus' color={colors.PRIMARY} />}
+                title='Create new'
                 onPress={onCreateNewPress} />
 
         </BasicModalContainer >

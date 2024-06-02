@@ -8,7 +8,7 @@ import { DocumentPickerOptions, DocumentPickerResponse, types } from 'react-nati
 import MaterialComIcon from "react-native-vector-icons/MaterialCommunityIcons"
 import { useDispatch } from 'react-redux'
 import catchAsyncError from 'src/api/catchError'
-import client from 'src/api/client'
+import { getClient } from 'src/api/client'
 import { updateNotification } from 'src/store/notification'
 import { mapRange } from 'src/utilis/Math'
 import { Keys, getFromAsyncStorage } from 'src/utilis/asyncStorage'
@@ -83,13 +83,11 @@ const Upload = (props: Props) => {
                 })
             }
 
-            const token = await getFromAsyncStorage(Keys.Auth_Token)
+            const client = await getClient({
+                "Content-Type": "multipart/form-data",
+            })
 
             const { data } = await client.post('/audio/create', formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data"
-                },
                 onUploadProgress(progressEvent) {
                     const uploaded = mapRange({
                         inputMin: 0,

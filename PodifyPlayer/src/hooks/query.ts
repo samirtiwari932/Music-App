@@ -3,11 +3,12 @@ import {useQueries, useQuery} from 'react-query';
 import {useDispatch} from 'react-redux';
 import {AudioData, Playlist} from 'src/@types/audio';
 import catchAsyncError from 'src/api/catchError';
-import client from 'src/api/client';
+import {getClient} from 'src/api/client';
 import {updateNotification} from 'src/store/notification';
 import {Keys, getFromAsyncStorage} from 'src/utilis/asyncStorage';
 
 const fetchLatest = async (): Promise<AudioData[]> => {
+  const client = await getClient();
   const {data} = await client('/audio/latest');
   return data.audios;
 };
@@ -23,6 +24,8 @@ export const useFetchLatestAudios = () => {
   });
 };
 const fetchRecommended = async (): Promise<AudioData[]> => {
+  const client = await getClient();
+
   const {data} = await client('/profile/recommended');
   return data.audios;
 };
@@ -37,6 +40,7 @@ export const useFetchRecommendedtAudios = () => {
   });
 };
 const fetchPlayList = async (): Promise<Playlist[]> => {
+  const client = await getClient();
   const token = await getFromAsyncStorage(Keys.Auth_Token);
   const {data} = await client('/playlist/by-profile', {
     headers: {
