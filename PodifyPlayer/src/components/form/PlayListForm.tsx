@@ -5,7 +5,7 @@ import colors from 'src/utilis/color'
 import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 
-interface PlayListInfo {
+export interface PlayListInfo {
     title: string
     private: boolean
 }
