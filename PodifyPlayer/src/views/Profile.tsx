@@ -29,9 +29,11 @@ const Profile = (props: Props) => (
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        padding: 10
     },
     tabBarStyle: {
+        marginBottom: 20,
         backgroundColor: "transparent",
         elevation: 0,
         //for ios 

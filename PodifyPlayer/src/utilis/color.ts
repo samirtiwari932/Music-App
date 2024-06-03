@@ -4,7 +4,7 @@ const CONTRAST = '#FFFFFF';
 const INACTIVE_CONTRAST = 'rgba(255,255,255,0.5)';
 const ERROR = '#FF5B14';
 const SUCCESS = '#3B3F1E';
-const OVERLAY = 'rgba(45,35,35,0.5';
+const OVERLAY = 'rgba(45,35,35,0.5)';
 
 const colors = {
   PRIMARY,
