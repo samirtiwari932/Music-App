@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Pressable, Image } from 'react-native'
 import React from 'react'
 import colors from 'src/utilis/color'
 import { AudioData } from 'src/@types/audio'
+import AudioListLoadingUI from './AudioListLoadingUI'
 
 interface Props {
     audio: AudioData

@@ -3,12 +3,13 @@ import React from 'react'
 import { useFetchUploadsBrProfile } from 'src/hooks/query'
 import colors from 'src/utilis/color'
 import AudioListItem from '@ui/AudioListItem'
+import AudioListLoadingUI from '@ui/AudioListLoadingUI'
 
 interface Props { }
 const UploadTabs = (props: Props) => {
     const { data, isLoading } = useFetchUploadsBrProfile()
 
-
+    if (isLoading) return <AudioListLoadingUI />
     return (
         <ScrollView style={styles.container}>
             {data?.map((item) => {
