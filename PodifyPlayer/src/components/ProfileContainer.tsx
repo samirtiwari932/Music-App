@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Pressable } from 'react-native'
 import React from 'react'
 import { UserProfile } from 'src/store/auth'
 import AvatarField from '@ui/AvatarField'
 import colors from 'src/utilis/color'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 
 interface Props {
     profile?: UserProfile | null
@@ -25,6 +26,9 @@ const ProfileContainer = ({ profile }: Props) => {
                     <Text style={styles.profileActionLink}>{profile.followings} Followings</Text>
                 </View>
             </View>
+            <Pressable style={styles.settingsBtn}>
+                <AntDesign name='setting' size={22} color={colors.CONTRAST} />
+            </Pressable>
         </View>
     )
 }
@@ -61,6 +65,14 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         fontSize: 12,
         margin: 5
+    },
+    settingsBtn: {
+        padding: 10,
+        width: 40,
+        aspectRatio: 1,
+        justifyContent: "center",
+        alignItems: "center",
+
     }
 })
 
