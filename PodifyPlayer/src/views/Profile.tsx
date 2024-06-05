@@ -7,12 +7,19 @@ import FavoriteTab from '@components/profile/FavoriteTab';
 import HistoryTab from '@components/profile/HistoryTab';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import colors from 'src/utilis/color';
+import { useSelector } from 'react-redux';
+import { getAuthState } from 'src/store/auth';
+import ProfileContainer from '@components/ProfileContainer';
 
 interface Props { }
 
 const Tab = createMaterialTopTabNavigator();
-const Profile = (props: Props) => (
-    <View style={styles.container}>
+const Profile = (props: Props) => {
+
+
+    const { profile } = useSelector(getAuthState)
+    return <View style={styles.container} >
+        <ProfileContainer profile={profile} />
         <Tab.Navigator screenOptions={
             {
                 tabBarStyle: styles.tabBarStyle,
@@ -25,7 +32,7 @@ const Profile = (props: Props) => (
             <Tab.Screen name="History" component={HistoryTab} />
         </Tab.Navigator>
     </View>
-)
+}
 
 const styles = StyleSheet.create({
     container: {
