@@ -5,12 +5,15 @@ import AvatarField from '@ui/AvatarField'
 import colors from 'src/utilis/color'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
+import { ProfileNavigatorStackParamList } from 'src/@types/navigation'
 
 interface Props {
     profile?: UserProfile | null
 }
 
 const ProfileContainer = ({ profile }: Props) => {
+    const { navigate } = useNavigation<NavigationProp<ProfileNavigatorStackParamList>>()
     if (!profile) return null
     return (
         <View style={styles.container}>
@@ -26,7 +29,9 @@ const ProfileContainer = ({ profile }: Props) => {
                     <Text style={styles.profileActionLink}>{profile.followings} Followings</Text>
                 </View>
             </View>
-            <Pressable style={styles.settingsBtn}>
+            <Pressable onPress={() => {
+                navigate("ProfileSettings")
+            }} style={styles.settingsBtn}>
                 <AntDesign name='setting' size={22} color={colors.CONTRAST} />
             </Pressable>
         </View>
