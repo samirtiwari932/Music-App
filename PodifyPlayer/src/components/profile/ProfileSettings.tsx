@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import colors from 'src/utilis/color'
 import AppHeaders from '@components/AppHeaders'
 import AvatarField from '@ui/AvatarField'
@@ -8,14 +8,28 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import AppButton from '@ui/AppButton'
 import { getClient } from 'src/api/client'
 import catchAsyncError from 'src/api/catchError'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { updateNotification } from 'src/store/notification'
 import { Keys, removeFromAsyncStorage } from 'src/utilis/asyncStorage'
-import { updateBusyState, updateLoggedInState, updateProfile } from 'src/store/auth'
+import { getAuthState, updateBusyState, updateLoggedInState, updateProfile } from 'src/store/auth'
+import deepEqual from 'deep-equal'
 
 interface Props { }
+interface ProfileInfo {
+    name: string
+    avatar?: string
+}
 const ProfileSettings = (props: Props) => {
+    const [userInfo, setUserInfo] = useState<ProfileInfo>({
+        name: ""
+    })
     const dispatch = useDispatch()
+    const { profile } = useSelector(getAuthState)
+
+    const isSame = deepEqual(userInfo, {
+        name: profile?.name,
+        avatar: profile?.avatar
+    })
     const handleLogOut = async (fromAll?: boolean) => {
         dispatch(updateBusyState(true))
         try {
@@ -36,6 +50,13 @@ const ProfileSettings = (props: Props) => {
         dispatch(updateBusyState(false))
     }
 
+    useEffect(() => {
+        if (profile) setUserInfo({
+            name: profile?.name,
+            avatar: profile?.avatar
+        })
+    }, [profile])
+
     return (
         <View style={styles.container}>
             <AppHeaders title='Settings' />
@@ -45,14 +66,19 @@ const ProfileSettings = (props: Props) => {
             </View>
             <View style={styles.settingOptionsContainer}>
                 <View style={styles.avatarContainer}>
-                    <AvatarField />
+                    <AvatarField source={userInfo.avatar} />
                     <Pressable style={{ paddingLeft: 15 }}>
                         <Text style={styles.linkText}>Upload Profile Image</Text>
                     </Pressable>
                 </View>
-                <TextInput style={styles.nameInput} value='John' />
+                <TextInput
+                    onChangeText={(text) => setUserInfo({
+                        ...userInfo,
+                        name: text
+                    })}
+                    style={styles.nameInput} value={userInfo.name} />
                 <View style={styles.emailContainer}>
-                    <Text style={styles.email}>JohnDoe@email.com</Text>
+                    <Text style={styles.email}>{profile?.email}</Text>
                     <MaterialIcon name="verified" size={15} color={colors.SECONDARY} />
                 </View>
             </View>
@@ -74,9 +100,11 @@ const ProfileSettings = (props: Props) => {
                     <Text style={styles.logoutBtnTitle}>LogOut </Text>
                 </Pressable>
             </View>
-            <View style={{ marginTop: 15 }}>
-                <AppButton title='Update' borderRadius={7} />
-            </View>
+            {!isSame ?
+                <View style={{ marginTop: 15 }}>
+                    <AppButton title='Update' borderRadius={7} />
+                </View>
+                : null}
         </View>
     )
 }
