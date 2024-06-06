@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native'
+import { View, Text, StyleSheet, Pressable, TextInput, PermissionsAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import colors from 'src/utilis/color'
 import AppHeaders from '@components/AppHeaders'
@@ -13,6 +13,7 @@ import { updateNotification } from 'src/store/notification'
 import { Keys, removeFromAsyncStorage } from 'src/utilis/asyncStorage'
 import { getAuthState, updateBusyState, updateLoggedInState, updateProfile } from 'src/store/auth'
 import deepEqual from 'deep-equal'
+import ImagePicker from 'react-native-image-crop-picker';
 
 interface Props { }
 interface ProfileInfo {
@@ -78,6 +79,23 @@ const ProfileSettings = (props: Props) => {
         setBusy(false);
     };
 
+    const handleImageSelect = async () => {
+        try {
+            const premissionRes = await PermissionsAndroid.requestMultiple([
+                PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES, PermissionsAndroid.PERMISSIONS.CAMERA
+            ]);
+            const res = await ImagePicker.openPicker({
+                cropping: true,
+                width: 300,
+                height: 300,
+
+            })
+            console.log(res)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
     useEffect(() => {
         if (profile) setUserInfo({
@@ -96,7 +114,7 @@ const ProfileSettings = (props: Props) => {
             <View style={styles.settingOptionsContainer}>
                 <View style={styles.avatarContainer}>
                     <AvatarField source={userInfo.avatar} />
-                    <Pressable style={{ paddingLeft: 15 }}>
+                    <Pressable onPress={handleImageSelect} style={{ paddingLeft: 15 }}>
                         <Text style={styles.linkText}>Upload Profile Image</Text>
                     </Pressable>
                 </View>
