@@ -14,6 +14,7 @@ import { Keys, removeFromAsyncStorage } from 'src/utilis/asyncStorage'
 import { getAuthState, updateBusyState, updateLoggedInState, updateProfile } from 'src/store/auth'
 import deepEqual from 'deep-equal'
 import ImagePicker from 'react-native-image-crop-picker';
+import { getPremissionToReadImages } from 'src/utilis/helper'
 
 interface Props { }
 interface ProfileInfo {
@@ -81,9 +82,7 @@ const ProfileSettings = (props: Props) => {
 
     const handleImageSelect = async () => {
         try {
-            const premissionRes = await PermissionsAndroid.requestMultiple([
-                PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES, PermissionsAndroid.PERMISSIONS.CAMERA
-            ]);
+            await getPremissionToReadImages()
             const res = await ImagePicker.openPicker({
                 cropping: true,
                 width: 300,
