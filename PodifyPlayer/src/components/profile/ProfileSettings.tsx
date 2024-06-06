@@ -6,7 +6,7 @@ import AvatarField from '@ui/AvatarField'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import AppButton from '@ui/AppButton'
-import { getClient } from 'src/api/client'
+import client, { getClient } from 'src/api/client'
 import catchAsyncError from 'src/api/catchError'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateNotification } from 'src/store/notification'
@@ -23,6 +23,7 @@ const ProfileSettings = (props: Props) => {
     const [userInfo, setUserInfo] = useState<ProfileInfo>({
         name: ""
     })
+    const [busy, setBusy] = useState(false)
     const dispatch = useDispatch()
     const { profile } = useSelector(getAuthState)
 
@@ -49,6 +50,34 @@ const ProfileSettings = (props: Props) => {
         }
         dispatch(updateBusyState(false))
     }
+    const handleSubmit = async () => {
+        setBusy(true);
+        try {
+            if (!userInfo.name.trim())
+                return dispatch(
+                    updateNotification({
+                        message: 'Profile name is require!',
+                        type: 'error',
+                    }),
+                );
+            const formData = new FormData();
+            formData.append('name', userInfo.name);
+            const client = await getClient({ 'Content-Type': 'multipart/form-data;' });
+            const { data } = await client.post('/auth/update-profile', formData);
+            dispatch(updateProfile(data.profile));
+            dispatch(
+                updateNotification({
+                    message: 'Your profile is updated.',
+                    type: 'success',
+                }),
+            );
+        } catch (error) {
+            const errorMessage = catchAsyncError(error);
+            dispatch(updateNotification({ message: errorMessage, type: 'error' }));
+        }
+        setBusy(false);
+    };
+
 
     useEffect(() => {
         if (profile) setUserInfo({
@@ -102,7 +131,7 @@ const ProfileSettings = (props: Props) => {
             </View>
             {!isSame ?
                 <View style={{ marginTop: 15 }}>
-                    <AppButton title='Update' borderRadius={7} />
+                    <AppButton onPress={handleSubmit} title='Update' borderRadius={7} busy={busy} />
                 </View>
                 : null}
         </View>
