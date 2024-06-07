@@ -15,6 +15,8 @@ import { getAuthState, updateBusyState, updateLoggedInState, updateProfile } fro
 import deepEqual from 'deep-equal'
 import ImagePicker from 'react-native-image-crop-picker';
 import { getPremissionToReadImages } from 'src/utilis/helper'
+import ReVerificationLink from '@components/ReVerificationLink'
+
 
 interface Props { }
 interface ProfileInfo {
@@ -125,7 +127,8 @@ const ProfileSettings = (props: Props) => {
                     style={styles.nameInput} value={userInfo.name} />
                 <View style={styles.emailContainer}>
                     <Text style={styles.email}>{profile?.email}</Text>
-                    <MaterialIcon name="verified" size={15} color={colors.SECONDARY} />
+
+                    {profile?.verified ? <MaterialIcon name="verified" size={15} color={colors.SECONDARY} /> : <ReVerificationLink linkTitle='Verify' activeAtFirst />}
                 </View>
             </View>
             <View style={styles.titleContainer}>
