@@ -7,7 +7,8 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { ProfileNavigatorStackParamList } from 'src/@types/navigation'
-
+import Octicions from 'react-native-vector-icons/Octicons'
+import Octicons from 'react-native-vector-icons/Octicons'
 interface Props {
     profile?: UserProfile | null
 }
@@ -22,7 +23,8 @@ const ProfileContainer = ({ profile }: Props) => {
                 <Text style={styles.profileName} >{profile.name}</Text>
                 <View style={styles.flexRow}>
                     <Text style={styles.email} >{profile.email}</Text>
-                    <MaterialIcon name='verified' color={colors.SECONDARY} size={15} />
+                    {profile.verified ?
+                        <MaterialIcon name='verified' color={colors.SECONDARY} size={15} /> : <Octicons name='unverified' color={colors.SECONDARY} size={15} />}
                 </View>
                 <View style={styles.flexRow}>
                     <Text style={styles.profileActionLink}>{profile.followers} Followers</Text>
