@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getAuthState } from 'src/store/auth'
 import catchAsyncError from 'src/api/catchError'
 import { updateNotification } from 'src/store/notification'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
+import { ProfileNavigatorStackParamList } from 'src/@types/navigation'
 
 interface Props {
     time?: number,
@@ -19,14 +21,24 @@ const ReVerificationLink = ({ linkTitle, userId, activeAtFirst = false, time = 6
     const [countDown, setCountDown] = useState(time)
     const [canSendNewOtpRequest, setCanSendNewOtpRequest] = useState(activeAtFirst)
 
+
     const dispatch = useDispatch()
     const { profile } = useSelector(getAuthState)
+    const { navigate } = useNavigation<NavigationProp<ProfileNavigatorStackParamList>>()
     const requestForOtp = async () => {
         setCountDown(60),
             setCanSendNewOtpRequest(false)
         try {
             const client = await getClient()
             await client.post('/auth/re-verify-email', { userId: userId || profile?.id })
+
+            navigate("Verification", {
+                userInfo: {
+                    email: profile?.email || "",
+                    name: profile?.name || "",
+                    id: userId || profile?.id || ""
+                }
+            })
         } catch (error) {
             const errorMessage = catchAsyncError(error)
             dispatch(updateNotification({ message: errorMessage, type: "error" }))

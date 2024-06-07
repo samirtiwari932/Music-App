@@ -5,7 +5,7 @@ import AuthFormContainer from '@components/AuthFormContainer';
 import OTPField from '@ui/OTPField';
 import AppButton from '@ui/AppButton';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AuthStackParamList } from 'src/@types/navigation';
+import { AuthStackParamList, ProfileNavigatorStackParamList } from 'src/@types/navigation';
 import client from 'src/api/client';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import colors from 'src/utilis/color';
@@ -13,11 +13,17 @@ import catchAsyncError from 'src/api/catchError';
 import { updateNotification } from 'src/store/notification';
 import { useDispatch } from 'react-redux';
 
-type Props = NativeStackScreenProps<AuthStackParamList, "Verification">
+type Props = NativeStackScreenProps<AuthStackParamList | ProfileNavigatorStackParamList, "Verification">
 
 const otpFields = new Array(6).fill('');
 
+type PossibleScreens = {
+    ProfileSettings: undefined,
+    SignIn: undefined
+}
+
 const Verification: FC<Props> = ({ route }) => {
+    const navigation = useNavigation<NavigationProp<PossibleScreens>>()
     const [otp, setOtp] = useState([...otpFields]);
     const [activeOtpIndex, setActiveOtpIndex] = useState(0);
     const [submitting, setSubmitting] = useState(false)
@@ -56,8 +62,6 @@ const Verification: FC<Props> = ({ route }) => {
         return value.trim()
     })
 
-    const navigation = useNavigation<NavigationProp<AuthStackParamList>>()
-
 
     const handleSubmit = async () => {
         if (!isValidOtp) return dispatch(updateNotification({ message: "Invalid Otp", type: "error" }));
@@ -67,7 +71,15 @@ const Verification: FC<Props> = ({ route }) => {
 
             dispatch(updateNotification({ message: data.message, type: "success" }))
 
-            navigation.navigate('SignIn')
+            const { routeNames } = navigation.getState()
+            if (routeNames.includes('SignIn')) {
+                //navigate back to sign In 
+                navigation.navigate('SignIn')
+            }
+            if (routeNames.includes("ProfileSettings")) {
+                //navigate to profile settings
+                navigation.navigate('ProfileSettings')
+            }
         } catch (error) {
             console.log("Error inside Verification ", error)
         }
