@@ -12,6 +12,7 @@ import { AudioData, Playlist } from 'src/@types/audio';
 import catchAsyncError from 'src/api/catchError';
 import { getClient } from 'src/api/client';
 import { useFetchPlayList } from 'src/hooks/query';
+import useAudioController from 'src/hooks/useAudioController';
 import { updateNotification } from 'src/store/notification';
 import { Keys, getFromAsyncStorage } from 'src/utilis/asyncStorage';
 import colors from 'src/utilis/color';
@@ -26,6 +27,8 @@ const Home: FC<Props> = props => {
     const [showPlaylistForm, setShowPlaylistForm] = useState(false);
 
     const dispatch = useDispatch();
+
+    const { onAudioPress } = useAudioController()
 
 
     const handleOnFavPress = async () => {
@@ -114,26 +117,11 @@ const Home: FC<Props> = props => {
     return (
         <View style={styles.container}>
             <LatestUpload
-                onAudioPress={async (item, data) => {
-                    const lists: Track[] = data.map(item => {
-                        return {
-                            id: item.id,
-                            url: item.file,
-                            title: item.title,
-                            artist: item.owner.name,
-                            artwork: item.poster || require('../assets/music.jpg'),
-                            isLiveStream: true
-                        }
-                    })
-                    await TrackPlayer.add([...lists])
-                    await TrackPlayer.play()
-                }}
+                onAudioPress={onAudioPress}
                 onAudioLongPress={handleOnLongPress}
             />
             <RecommendedAudios
-                onAudioPress={item => {
-                    console.log(item);
-                }}
+                onAudioPress={onAudioPress}
                 onAudioLongPress={handleOnLongPress}
             />
             <OptionsModal
