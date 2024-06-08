@@ -2,21 +2,27 @@
 import { View, Text, StyleSheet, Pressable, Image } from 'react-native'
 import React from 'react'
 import colors from 'src/utilis/color'
+import PlayAnimation from './PlayAnimation';
 
 interface Props {
     title: string;
     poster?: string;
+    playing: boolean;
     onPress?: () => void
     onLongPress?: () => void
 }
-const AudioCart = ({ title, poster, onLongPress, onPress }: Props) => {
+const AudioCart = ({ title, poster, playing = false, onLongPress, onPress }: Props) => {
     const source = poster ? { uri: poster } : require('../assets/music.jpg')
     return (
         <Pressable
             onPress={onPress}
             onLongPress={onLongPress}
             style={styles.container}>
-            <Image source={source} style={styles.poster} />
+            <View>
+
+                <Image source={source} style={styles.poster} />
+                <PlayAnimation visible={playing} />
+            </View>
             <Text
 
                 numberOfLines={2}

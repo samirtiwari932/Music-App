@@ -5,7 +5,12 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 import {useDispatch, useSelector} from 'react-redux';
 import {AudioData} from 'src/@types/audio';
-import {getPlayerState, updateOnGoingAudio} from 'src/store/player';
+import {
+  getPlayerState,
+  updateOnGoingAudio,
+  updateOnGoingList,
+} from 'src/store/player';
+
 const updateQueue = async (data: AudioData[]) => {
   const lists: Track[] = data.map(item => {
     return {
@@ -19,29 +24,41 @@ const updateQueue = async (data: AudioData[]) => {
   });
   await TrackPlayer.add([...lists]);
 };
+
 const useAudioController = () => {
-  const {state: playbackState} = usePlaybackState() as {state?: State};
+  const playbackState = usePlaybackState();
   const {onGoingAudio} = useSelector(getPlayerState);
   const dispatch = useDispatch();
 
-  const isPlayerReady = playbackState !== State.None;
+  const isPlayerReady = playbackState.state !== State.None;
 
   const onAudioPress = async (item: AudioData, data: AudioData[]) => {
     if (!isPlayerReady) {
-      //playing audio for the first time
+      // Playing audio for the first time
+      console.log('playing for the first time ');
+
       await updateQueue(data);
       const index = data.findIndex(audio => audio.id === item.id);
       await TrackPlayer.skip(index);
       await TrackPlayer.play();
       dispatch(updateOnGoingAudio(item));
+      dispatch(updateOnGoingList(data));
     }
-    if (playbackState === State.Playing || onGoingAudio?.id === item.id) {
-      //same audio is already (handle pause )
+
+    if (playbackState.state === State.Playing && onGoingAudio?.id === item.id) {
+      // Same audio is already playing (handle pause)
       await TrackPlayer.pause();
     }
-    if (playbackState === State.Paused && onGoingAudio?.id === item.id) {
-      //same audio no need to load handle resume
+
+    if (playbackState.state === State.Paused && onGoingAudio?.id === item.id) {
+      // Same audio no need to load (handle resume)
       await TrackPlayer.play();
+    }
+
+    if (onGoingAudio?.id !== item.id) {
+      console.log('playing new audio ');
+      //palying new audio from the same list
+      //playing audio from the different list
     }
   };
 

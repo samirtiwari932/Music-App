@@ -2,9 +2,11 @@ import AudioCart from '@ui/AudioCart'
 import PulseAnimationContainer from '@ui/PulseAnimationContainer'
 import React from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useSelector } from 'react-redux'
 import { AudioData } from 'src/@types/audio'
 
 import { useFetchLatestAudios } from 'src/hooks/query'
+import { getPlayerState } from 'src/store/player'
 import colors from 'src/utilis/color'
 
 interface Props {
@@ -16,6 +18,8 @@ const dummyData = new Array(4).fill("")
 const Home = ({ onAudioLongPress, onAudioPress }: Props) => {
 
     const { data, isLoading } = useFetchLatestAudios()
+    const { onGoingAudio } = useSelector(getPlayerState)
+    console.log(onGoingAudio)
 
     if (isLoading) {
         return (
@@ -41,13 +45,19 @@ const Home = ({ onAudioLongPress, onAudioPress }: Props) => {
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {data?.map((item) => {
                     return (
-                        <AudioCart key={item.id} title={item.title} poster={item.poster} onPress={() => {
-                            onAudioPress(item, data)
+                        <AudioCart
+                            key={item.id}
+                            title={item.title}
+                            poster={item.poster}
+                            onPress={() => {
+                                onAudioPress(item, data)
 
-                        }}
+                            }}
                             onLongPress={() => {
                                 onAudioLongPress(item, data)
-                            }} />
+                            }}
+                            playing={onGoingAudio?.id === item.id}
+                        />
                     )
                 })}
             </ScrollView>
