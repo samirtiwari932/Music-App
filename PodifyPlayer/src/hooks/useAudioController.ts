@@ -1,10 +1,9 @@
 import deepEqual from 'deep-equal';
 import TrackPlayer, {
-  State,
   Track,
   usePlaybackState,
+  State,
 } from 'react-native-track-player';
-import {load} from 'react-native-track-player/lib/src/trackPlayer';
 import {useDispatch, useSelector} from 'react-redux';
 import {AudioData} from 'src/@types/audio';
 import {
@@ -29,15 +28,19 @@ const updateQueue = async (data: AudioData[]) => {
 };
 
 const useAudioController = () => {
-  const {state: playbackState} = usePlaybackState();
+  const {state: playbackState} = usePlaybackState() as {state?: State};
+
   const {onGoingAudio, onGoingList} = useSelector(getPlayerState);
   const dispatch = useDispatch();
 
-  const isPlayerReady = playbackState !== State.None;
-
+  const isPalyerReady = playbackState !== State.None;
+  const isPlaying = playbackState === State.Playing;
+  const isPaused = playbackState === State.Paused;
+  const isBuffering =
+    playbackState === State.Buffering || playbackState === State.Loading;
   const onAudioPress = async (item: AudioData, data: AudioData[]) => {
-    if (!isPlayerReady) {
-      //playing audio for the first time
+    if (!isPalyerReady) {
+      // Playing audio for the first time.
       await updateQueue(data);
       const index = data.findIndex(audio => audio.id === item.id);
       await TrackPlayer.skip(index);
@@ -47,11 +50,12 @@ const useAudioController = () => {
     }
 
     if (playbackState === State.Playing && onGoingAudio?.id === item.id) {
-      //same audio is already playing handle pause
+      // same audio is already playing (handle pause)
       return await TrackPlayer.pause();
     }
+
     if (playbackState === State.Paused && onGoingAudio?.id === item.id) {
-      //resume audio
+      // same audio no need to load handle resume
       return await TrackPlayer.play();
     }
 
@@ -59,13 +63,10 @@ const useAudioController = () => {
       const fromSameList = deepEqual(onGoingList, data);
 
       await TrackPlayer.pause();
-
-      console.log('Same List', fromSameList);
       const index = data.findIndex(audio => audio.id === item.id);
-      if (!fromSameList) {
-        //playing audio from different list
-        console.log('Different List');
 
+      if (!fromSameList) {
+        // playing new audio from different list
         await TrackPlayer.reset();
         await updateQueue(data);
         dispatch(updateOnGoingList(data));
@@ -76,6 +77,14 @@ const useAudioController = () => {
       dispatch(updateOnGoingAudio(item));
     }
   };
-  return {onAudioPress};
+  const togglePlayPause = async () => {
+    if (isPlaying) {
+      await TrackPlayer.pause();
+    } else {
+      await TrackPlayer.play();
+    }
+  };
+  return {onAudioPress, isPalyerReady, isPlaying, isBuffering, togglePlayPause};
 };
+
 export default useAudioController;

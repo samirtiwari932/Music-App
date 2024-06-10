@@ -1,17 +1,20 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import MiniAudioPlayer from './MiniAudioPlayer'
+import useAudioController from 'src/hooks/useAudioController'
+
 
 interface Props {
     children: React.ReactNode
 }
 const AppView = ({ children }: Props) => {
+    const { isPalyerReady } = useAudioController()
     return (
         <View style={styles.container}>
             <View style={styles.children}>
                 {children}
             </View>
-            <MiniAudioPlayer />
+            {isPalyerReady ? <MiniAudioPlayer /> : null}
         </View>
     )
 }
