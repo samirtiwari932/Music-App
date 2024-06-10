@@ -1,10 +1,13 @@
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native'
-import React from 'react'
-import { useFetchRecommendedtAudios } from 'src/hooks/query'
-import colors from 'src/utilis/color'
+import AudioCart from '@ui/AudioCart'
 import GridView from '@ui/GridView'
 import PulseAnimationContainer from '@ui/PulseAnimationContainer'
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import { useSelector } from 'react-redux'
 import { AudioData } from 'src/@types/audio'
+import { useFetchRecommendedtAudios } from 'src/hooks/query'
+import { getPlayerState } from 'src/store/player'
+import colors from 'src/utilis/color'
 
 interface Props {
     onAudioPress(item: AudioData, data: AudioData[]): void
@@ -14,10 +17,9 @@ const RecommendedAudios = ({ onAudioPress, onAudioLongPress }: Props) => {
 
     const { data = [], isLoading } = useFetchRecommendedtAudios()
 
+    const { onGoingAudio } = useSelector(getPlayerState)
 
-    const getPoster = (poster?: string) => {
-        return poster ? { uri: poster } : require('../assets/music.jpg')
-    }
+
 
     const dummyData = new Array(6).fill('')
 
@@ -48,27 +50,16 @@ const RecommendedAudios = ({ onAudioPress, onAudioLongPress }: Props) => {
                 col={3}
                 data={data} renderItem={(item) => {
                     return (
-                        <Pressable onPress={() => {
+                        <AudioCart title={item.title} poster={item.poster} onPress={() => {
                             onAudioPress(item, data)
-                        }} onLongPress={() => {
-                            onAudioLongPress(item, data)
-                        }}>
-                            <Image source={getPoster(item.poster)} style={styles.poster} />
-                            <Text
-                                numberOfLines={2}
-                                ellipsizeMode='tail'
-                                style={{
-                                    color: colors.CONTRAST,
-                                    fontWeight: "500",
-                                    fontSize: 15,
-                                    marginTop: 5
-                                }}>
-                                {item.title}p
-                            </Text>
-                        </Pressable>
-
+                        }}
+                            onLongPress={() => { onAudioLongPress(item, data) }}
+                            containerStyle={{ width: '100%' }}
+                            playing={onGoingAudio?.id === item.id}
+                        />
                     )
-                }} />
+                }}
+            />
 
         </View>
     )

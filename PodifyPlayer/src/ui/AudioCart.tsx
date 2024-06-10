@@ -1,5 +1,5 @@
 
-import { View, Text, StyleSheet, Pressable, Image } from 'react-native'
+import { View, Text, StyleSheet, Pressable, Image, ViewStyle, StyleProp } from 'react-native'
 import React from 'react'
 import colors from 'src/utilis/color'
 import PlayAnimation from './PlayAnimation';
@@ -7,17 +7,18 @@ import PlayAnimation from './PlayAnimation';
 interface Props {
     title: string;
     poster?: string;
-    playing: boolean;
+    playing?: boolean;
+    containerStyle?: StyleProp<ViewStyle>
     onPress?: () => void
     onLongPress?: () => void
 }
-const AudioCart = ({ title, poster, playing = false, onLongPress, onPress }: Props) => {
+const AudioCart = ({ title, poster, containerStyle, playing = false, onLongPress, onPress }: Props) => {
     const source = poster ? { uri: poster } : require('../assets/music.jpg')
     return (
         <Pressable
             onPress={onPress}
             onLongPress={onLongPress}
-            style={styles.container}>
+            style={[styles.container, containerStyle]}>
             <View>
 
                 <Image source={source} style={styles.poster} />
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
     },
     poster: {
         aspectRatio: 1,
-        height: 100,
+        width: "100%",
         borderRadius: 7
     },
     title: {

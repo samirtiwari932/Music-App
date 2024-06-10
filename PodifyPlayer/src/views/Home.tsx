@@ -28,7 +28,7 @@ const Home: FC<Props> = props => {
 
     const dispatch = useDispatch();
 
-    const { onAudioPress } = useAudioController()
+    const { onAudioPress } = useAudioController();
 
 
     const handleOnFavPress = async () => {
@@ -41,7 +41,7 @@ const Home: FC<Props> = props => {
             const { data } = await client.post(
                 `/favorite?audioId=${selectedAudio.id}`,
             );
-            console.log(data, "This is the data")
+            // console.log(data, "This is the data")
         } catch (error) {
             const errorMessage = catchAsyncError(error);
             dispatch(updateNotification({ message: errorMessage, type: 'error' }));
@@ -75,7 +75,7 @@ const Home: FC<Props> = props => {
                 },
 
             );
-            console.log(data);
+            // console.log(data);
         } catch (error) {
             const errorMessage = catchAsyncError(error);
             console.log(errorMessage);
@@ -99,7 +99,7 @@ const Home: FC<Props> = props => {
             setSelectedAudio(undefined)
             setShowPlaylistModal(false)
             dispatch(updateNotification({ message: "New audio added.", type: "success" }))
-            console.log(data)
+            // console.log(data)
         } catch (error) {
             const errorMessage = catchAsyncError(error);
             console.log(errorMessage);
@@ -113,7 +113,8 @@ const Home: FC<Props> = props => {
             await TrackPlayer.setupPlayer()
         }
         setupPlayer()
-    })
+    }, [])
+
     return (
         <View style={styles.container}>
             <LatestUpload

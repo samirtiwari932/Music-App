@@ -23,6 +23,7 @@ const slice = createSlice({
     },
     updateOnGoingList(playerState, {payload}: PayloadAction<AudioData[]>) {
       playerState.onGoingList = payload;
+      console.log(playerState.onGoingList, 'this is the checker function');
     },
   },
 });
@@ -33,7 +34,6 @@ const slice = createSlice({
 // );
 
 export const getPlayerState = (state: RootState) => state.player;
-
 export const {updateOnGoingAudio, updateOnGoingList} = slice.actions;
 
 export default slice.reducer;

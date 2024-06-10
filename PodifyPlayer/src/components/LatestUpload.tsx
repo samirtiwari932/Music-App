@@ -19,7 +19,7 @@ const Home = ({ onAudioLongPress, onAudioPress }: Props) => {
 
     const { data, isLoading } = useFetchLatestAudios()
     const { onGoingAudio } = useSelector(getPlayerState)
-    console.log(onGoingAudio)
+    // console.log(onGoingAudio)
 
     if (isLoading) {
         return (
