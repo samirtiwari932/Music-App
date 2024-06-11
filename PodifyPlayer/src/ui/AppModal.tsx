@@ -1,0 +1,73 @@
+import React, { ReactNode, useEffect } from 'react'
+import { Dimensions, Modal, Pressable, StyleSheet } from 'react-native'
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler'
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import colors from 'src/utilis/color'
+
+interface Props {
+    children: ReactNode,
+    visible: boolean,
+    onRequestClose: () => void,
+    animation?: boolean
+}
+const { height } = Dimensions.get('window')
+const modalHeight = height - 150
+const AppModal = ({ children, onRequestClose, visible, animation }: Props) => {
+
+    const translateY = useSharedValue(modalHeight)
+    const translateStyle = useAnimatedStyle(() => ({
+        transform: [{ translateY: translateY.value }]
+    }))
+    const gesture = Gesture.Pan().onUpdate((e) => {
+        if (e.translationY <= 0) return;
+
+        translateY.value = e.translationY;
+    }).onFinalize(() => {
+        if (translateY.value < modalHeight / 2) {
+            translateY.value = 0;
+        } else {
+            translateY.value = modalHeight;
+            runOnJS(onRequestClose)();
+        }
+    })
+
+    useEffect(() => {
+        if (visible)
+            translateY.value = withTiming(0, { duration: animation ? 200 : 0 });
+    }, [visible, animation])
+    return (
+        <Modal onRequestClose={onRequestClose} visible={visible} transparent>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+                <Pressable onResponderEnd={onRequestClose} style={styles.backdrop} />
+                <GestureDetector gesture={gesture}>
+
+                    <Animated.View style={[styles.modal, translateStyle]}>
+                        {children}
+                    </Animated.View>
+                </GestureDetector>
+
+            </GestureHandlerRootView>
+        </Modal >
+    )
+}
+
+const styles = StyleSheet.create({
+
+    backdrop: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: colors.INACTIVE_CONTRAST,
+
+    },
+    modal: {
+        backgroundColor: colors.PRIMARY,
+        height: modalHeight,
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        left: 0,
+        borderTopEndRadius: 10,
+        borderTopStartRadius: 10,
+    }
+})
+
+export default AppModal 
