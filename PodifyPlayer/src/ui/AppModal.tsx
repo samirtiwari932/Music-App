@@ -18,6 +18,11 @@ const AppModal = ({ children, onRequestClose, visible, animation }: Props) => {
     const translateStyle = useAnimatedStyle(() => ({
         transform: [{ translateY: translateY.value }]
     }))
+
+    const handleClose = () => {
+        translateY.value = modalHeight
+        onRequestClose()
+    }
     const gesture = Gesture.Pan().onUpdate((e) => {
         if (e.translationY <= 0) return;
 
@@ -27,7 +32,7 @@ const AppModal = ({ children, onRequestClose, visible, animation }: Props) => {
             translateY.value = 0;
         } else {
             translateY.value = modalHeight;
-            runOnJS(onRequestClose)();
+            runOnJS(handleClose)();
         }
     })
 
@@ -36,9 +41,9 @@ const AppModal = ({ children, onRequestClose, visible, animation }: Props) => {
             translateY.value = withTiming(0, { duration: animation ? 200 : 0 });
     }, [visible, animation])
     return (
-        <Modal onRequestClose={onRequestClose} visible={visible} transparent>
+        <Modal onRequestClose={handleClose} visible={visible} transparent>
             <GestureHandlerRootView style={{ flex: 1 }}>
-                <Pressable onResponderEnd={onRequestClose} style={styles.backdrop} />
+                <Pressable onResponderEnd={handleClose} style={styles.backdrop} />
                 <GestureDetector gesture={gesture}>
 
                     <Animated.View style={[styles.modal, translateStyle]}>
