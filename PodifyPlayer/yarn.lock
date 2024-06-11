@@ -3045,6 +3045,11 @@ form-data@^4.0.0:
     combined-stream "^1.0.8"
     mime-types "^2.1.12"
 
+format-duration@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.npmjs.org/format-duration/-/format-duration-3.0.2.tgz"
+  integrity sha512-pKzJDSRgK2lqAiPW3uizDaIJaJnataZclsahz25UMwfdryBGDa+1HlbXGjzpMvX/2kMh4O0sNevFXKaEfCjHsA==
+
 formik@^2.4.6:
   version "2.4.6"
   resolved "https://registry.npmjs.org/formik/-/formik-2.4.6.tgz"

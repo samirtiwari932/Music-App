@@ -5,10 +5,9 @@ import OptionsModal from '@components/OptionsModal';
 import PlayListModal from '@components/PlayListModal';
 import RecommendedAudios from '@components/RecommendedAudios';
 import PlayListForm, { PlayListInfo } from '@components/form/PlayListForm';
-import AppModal from '@ui/AppModal';
-import { AudioHTMLAttributes, FC, useEffect, useState } from 'react';
-import { View, StyleSheet, Pressable, Text, ScrollView, Button } from 'react-native';
-import TrackPlayer, { Track } from 'react-native-track-player';
+import { FC, useEffect, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
+import TrackPlayer from 'react-native-track-player';
 import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch } from 'react-redux';
 import { AudioData, Playlist } from 'src/@types/audio';
@@ -17,7 +16,6 @@ import { getClient } from 'src/api/client';
 import { useFetchPlayList } from 'src/hooks/query';
 import useAudioController from 'src/hooks/useAudioController';
 import { updateNotification } from 'src/store/notification';
-import { Keys, getFromAsyncStorage } from 'src/utilis/asyncStorage';
 import colors from 'src/utilis/color';
 
 interface Props { }
@@ -29,7 +27,6 @@ const Home: FC<Props> = props => {
     const [showPlaylistModal, setShowPlaylistModal] = useState(false);
     const [showPlaylistForm, setShowPlaylistForm] = useState(false);
 
-    const [show, setShow] = useState(false)
 
     const dispatch = useDispatch();
 
@@ -165,10 +162,6 @@ const Home: FC<Props> = props => {
                 <PlayListForm visible={showPlaylistForm} onRequestClose={() => setShowPlaylistForm(false)}
                     onSubmit={handlePlaylistSubmit} />
             </ScrollView>
-            <Button title='Open' onPress={() => setShow(true)} />
-            <AppModal animation visible={show} onRequestClose={() => setShow(false)}>
-                <View />
-            </AppModal>
         </AppView>
 
     );

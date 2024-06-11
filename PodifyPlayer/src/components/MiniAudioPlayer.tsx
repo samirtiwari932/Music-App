@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import colors from 'src/utilis/color'
 import { useSelector } from 'react-redux'
 import { getPlayerState } from 'src/store/player'
@@ -10,16 +10,26 @@ import Loader from '@ui/Loader'
 import { load } from 'react-native-track-player/lib/src/trackPlayer'
 import { mapRange } from 'src/utilis/Math'
 import { useProgress } from 'react-native-track-player'
+import AudioPlayer from './AudioPlayer'
 
 interface Props { }
 const MiniAudioPlayer = (props: Props) => {
     const { onGoingAudio } = useSelector(getPlayerState)
     const { isPlaying, togglePlayPause, isBuffering } = useAudioController()
+    const [playerVisibility, setPlayerVisibility] = useState(false)
 
     const { buffered, duration, position } = useProgress()
 
+
     const poster = onGoingAudio?.poster
     const source = poster ? { uri: poster } : require('../assets/music.jpg')
+
+    const closePlayerModal = () => {
+        setPlayerVisibility(false)
+    }
+    const openPlayerModal = () => {
+        setPlayerVisibility(true)
+    }
     return (
         <>
             <View style={{
@@ -35,7 +45,7 @@ const MiniAudioPlayer = (props: Props) => {
             }}>
 
             </View>
-            <View style={styles.container} >
+            <Pressable onPress={openPlayerModal} style={styles.container} >
                 <Image source={source} style={styles.poster} />
                 <View style={styles.contentContainer}>
                     <Text style={styles.title}>{onGoingAudio?.title}</Text>
@@ -46,7 +56,8 @@ const MiniAudioPlayer = (props: Props) => {
                 </Pressable>
                 {isBuffering ? <Loader /> : <PlayPauseBtn playing={isPlaying} onPress={togglePlayPause} />}
 
-            </View >
+            </Pressable >
+            <AudioPlayer visible={playerVisibility} onRequestClose={closePlayerModal} />
         </>
     )
 }
