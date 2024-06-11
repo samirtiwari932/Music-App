@@ -8,6 +8,8 @@ import colors from 'src/utilis/color'
 import AppLink from '@ui/AppLink'
 import { useProgress } from 'react-native-track-player'
 import formatDuration from 'format-duration'
+import Slider from '@react-native-community/slider'
+import { seekTo } from 'react-native-track-player/lib/src/trackPlayer'
 
 interface Props {
     visible: boolean,
@@ -22,11 +24,17 @@ const formattedDuration = (duration = 0) => {
 const AudioPlayer = ({ visible, onRequestClose }: Props) => {
     const { onGoingAudio } = useSelector(getPlayerState)
 
+    const { seekTo } = useAudioController()
+
     const poster = onGoingAudio?.poster
 
     const source = poster ? { uri: poster } : require('../assets/music.jpg')
 
     const { duration, position } = useProgress()
+
+    const updateSeek = async (value: number) => {
+        await seekTo(value)
+    }
 
     return (
         <AppModal animation visible={visible} onRequestClose={onRequestClose}>
@@ -38,7 +46,18 @@ const AudioPlayer = ({ visible, onRequestClose }: Props) => {
 
                     <View style={styles.durationContainer}>
                         <Text style={styles.duration}>{formattedDuration(position * 1000)}</Text>
-                        <Text style={styles.duration}>{formattedDuration(duration)}</Text>
+                        <Text style={styles.duration}>{formattedDuration(duration * 1000)}</Text>
+                    </View>
+                    <Slider
+                        minimumValue={0}
+                        maximumValue={duration}
+                        minimumTrackTintColor={colors.CONTRAST}
+                        maximumTrackTintColor={colors.INACTIVE_CONTRAST}
+                        value={position}
+                        onSlidingComplete={updateSeek}
+                    />
+                    <View>
+
                     </View>
                 </View>
             </View>
