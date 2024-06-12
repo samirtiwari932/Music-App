@@ -14,6 +14,7 @@ import PlayPauseBtn from '@ui/PlayPauseBtn';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PlayerController from '@ui/PlayerController';
 import Loader from '@ui/Loader';
+import PlayBackRateSelector from '@ui/PlayBackRateSelector';
 
 interface Props {
     visible: boolean,
@@ -115,6 +116,11 @@ const AudioPlayer = ({ visible, onRequestClose }: Props) => {
                         </PlayerController>
 
                     </View>
+
+                    <PlayBackRateSelector
+                        onPress={rate => console.log(rate)}
+                        activeRate='0.25'
+                        containerStyle={{ marginTop: 20 }} />
                 </View>
             </View>
         </AppModal>
