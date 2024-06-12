@@ -2,8 +2,8 @@ import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import React from 'react';
 import AppModal from '@ui/AppModal';
 import useAudioController from 'src/hooks/useAudioController';
-import { useSelector } from 'react-redux';
-import { getPlayerState } from 'src/store/player';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPlayerState, updatePlayBackRate } from 'src/store/player';
 import colors from 'src/utilis/color';
 import AppLink from '@ui/AppLink';
 import { useProgress } from 'react-native-track-player';
@@ -28,9 +28,11 @@ const formattedDuration = (duration = 0) => {
 }
 
 const AudioPlayer = ({ visible, onRequestClose }: Props) => {
-    const { onGoingAudio } = useSelector(getPlayerState);
+    const { onGoingAudio, playbackRate } = useSelector(getPlayerState);
 
-    const { onPreviousPress, isPlaying, onNextPress, isBuffering, seekTo, skipTo, togglePlayPause } = useAudioController();
+    const dispatch = useDispatch()
+
+    const { onPreviousPress, isPlaying, onNextPress, isBuffering, seekTo, skipTo, togglePlayPause, setPlayBackRate } = useAudioController();
 
     const poster = onGoingAudio?.poster;
     const source = poster ? { uri: poster } : require('../assets/music.jpg');
@@ -56,6 +58,12 @@ const AudioPlayer = ({ visible, onRequestClose }: Props) => {
 
     const handleOnPrevPress = async () => {
         await onPreviousPress();
+    }
+
+    //function onPlayBackPress 
+    const onPlayBackPress = async (rate: number) => {
+        await setPlayBackRate(rate);
+        dispatch(updatePlayBackRate(rate))
     }
 
     return (
@@ -118,8 +126,8 @@ const AudioPlayer = ({ visible, onRequestClose }: Props) => {
                     </View>
 
                     <PlayBackRateSelector
-                        onPress={rate => console.log(rate)}
-                        activeRate='0.25'
+                        onPress={onPlayBackPress}
+                        activeRate={playbackRate.toString()}
                         containerStyle={{ marginTop: 20 }} />
                 </View>
             </View>

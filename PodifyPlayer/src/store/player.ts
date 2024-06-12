@@ -5,11 +5,13 @@ import {AudioData} from 'src/@types/audio';
 interface Player {
   onGoingAudio: AudioData | null;
   onGoingList: AudioData[];
+  playbackRate: number;
 }
 
 const initialState: Player = {
   onGoingAudio: null,
   onGoingList: [],
+  playbackRate: 1,
 };
 const slice = createSlice({
   name: 'player',
@@ -23,7 +25,12 @@ const slice = createSlice({
     },
     updateOnGoingList(playerState, {payload}: PayloadAction<AudioData[]>) {
       playerState.onGoingList = payload;
-      console.log(playerState.onGoingList, 'this is the checker function');
+      // console.log(playerState.onGoingList, 'this is the checker function');
+    },
+    updatePlayBackRate(playerState, {payload}: PayloadAction<number>) {
+      playerState.playbackRate = payload;
+      //   console.log(playerState.onGoingList, 'this is the checker function');
+      //
     },
   },
 });
@@ -34,6 +41,7 @@ const slice = createSlice({
 // );
 
 export const getPlayerState = (state: RootState) => state.player;
-export const {updateOnGoingAudio, updateOnGoingList} = slice.actions;
+export const {updateOnGoingAudio, updateOnGoingList, updatePlayBackRate} =
+  slice.actions;
 
 export default slice.reducer;
