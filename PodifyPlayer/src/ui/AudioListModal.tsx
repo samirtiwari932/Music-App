@@ -5,6 +5,8 @@ import AppModal from './AppModal'
 import { AudioData } from 'src/@types/audio'
 import AudioListItem from './AudioListItem'
 import AudioListLoadingUI from './AudioListLoadingUI'
+import { useSelector } from 'react-redux'
+import { getPlayerState } from 'src/store/player'
 
 interface Props {
     data: AudioData[]
@@ -15,6 +17,7 @@ interface Props {
     onItemPress(item: AudioData, data: AudioData[]): void
 }
 const AudioListModal = ({ header, onItemPress, loading, data, onRequestClose, visible }: Props) => {
+    const { onGoingAudio } = useSelector(getPlayerState)
     return (
         <AppModal visible={visible} onRequestClose={onRequestClose}>
             <View style={styles.container} >
@@ -32,6 +35,7 @@ const AudioListModal = ({ header, onItemPress, loading, data, onRequestClose, vi
                             return <AudioListItem
                                 audio={item}
                                 onPress={() => onItemPress(item, data)}
+                                isPlaying={onGoingAudio?.id === item.id}
                             />
                         }
                         }
