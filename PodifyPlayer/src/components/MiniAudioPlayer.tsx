@@ -11,6 +11,7 @@ import { load } from 'react-native-track-player/lib/src/trackPlayer'
 import { mapRange } from 'src/utilis/Math'
 import { useProgress } from 'react-native-track-player'
 import AudioPlayer from './AudioPlayer'
+import CurrentAudioList from './CurrentAudioList'
 
 interface Props { }
 const MiniAudioPlayer = (props: Props) => {
@@ -72,9 +73,7 @@ const MiniAudioPlayer = (props: Props) => {
                 visible={playerVisibility}
                 onListOptionPress={handleOnListOptionPress}
             />
-
-
-
+            <CurrentAudioList visible={showCurrentList} onRequestClose={handleOnCurrentListClose} />
         </>
     )
 }
