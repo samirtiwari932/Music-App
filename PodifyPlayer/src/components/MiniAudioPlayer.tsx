@@ -17,6 +17,7 @@ const MiniAudioPlayer = (props: Props) => {
     const { onGoingAudio } = useSelector(getPlayerState)
     const { isPlaying, togglePlayPause, isBuffering } = useAudioController()
     const [playerVisibility, setPlayerVisibility] = useState(false)
+    const [showCurrentList, setShowCurrentList] = useState(false)
 
     const { buffered, duration, position } = useProgress()
 
@@ -30,6 +31,15 @@ const MiniAudioPlayer = (props: Props) => {
     const openPlayerModal = () => {
         setPlayerVisibility(true)
     }
+
+    const handleOnCurrentListClose = () => {
+        setShowCurrentList(false)
+    }
+    const handleOnListOptionPress = () => {
+        closePlayerModal()
+        setShowCurrentList(true)
+    }
+
     return (
         <>
             <View style={{
@@ -57,7 +67,14 @@ const MiniAudioPlayer = (props: Props) => {
                 {isBuffering ? <Loader /> : <PlayPauseBtn playing={isPlaying} onPress={togglePlayPause} />}
 
             </Pressable >
-            <AudioPlayer visible={playerVisibility} onRequestClose={closePlayerModal} />
+            <AudioPlayer
+                onRequestClose={closePlayerModal}
+                visible={playerVisibility}
+                onListOptionPress={handleOnListOptionPress}
+            />
+
+
+
         </>
     )
 }

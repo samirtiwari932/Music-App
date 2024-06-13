@@ -3,18 +3,23 @@ import React from 'react'
 import colors from 'src/utilis/color'
 import { AudioData } from 'src/@types/audio'
 import AudioListLoadingUI from './AudioListLoadingUI'
+import PlayAnimation from './PlayAnimation'
 
 interface Props {
     audio: AudioData
     onPress?: () => void
+    isPlaying?: boolean
 }
-const AudioListItem = ({ audio, onPress }: Props) => {
+const AudioListItem = ({ audio, isPlaying = false, onPress }: Props) => {
     const getSource = (poster?: string) => {
         return poster ? { uri: poster } : require('../assets/music.jpg')
     }
     return (
         <Pressable style={styles.listItem}>
-            <Image source={getSource(audio.poster)} style={styles.poster} />
+            <View>
+                <Image source={getSource(audio.poster)} style={styles.poster} />
+                <PlayAnimation visible={isPlaying} />
+            </View>
             <View style={styles.titleContainer}>
                 <Text style={styles.title} numberOfLines={1} ellipsizeMode='tail'>{audio.title}</Text>
                 <Text style={styles.owner} numberOfLines={1}>{audio.owner.name}</Text>
@@ -24,11 +29,13 @@ const AudioListItem = ({ audio, onPress }: Props) => {
 }
 
 const styles = StyleSheet.create({
-    container: {}, listItem: {
+    container: {},
+    listItem: {
         flexDirection: "row",
         backgroundColor: colors.OVERLAY,
         marginBottom: 15,
-        borderRadius: 5
+        borderRadius: 5,
+        overflow: 'hidden'
     },
     poster: {
         width: 50,
