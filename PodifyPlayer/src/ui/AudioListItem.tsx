@@ -15,7 +15,7 @@ const AudioListItem = ({ audio, isPlaying = false, onPress }: Props) => {
         return poster ? { uri: poster } : require('../assets/music.jpg')
     }
     return (
-        <Pressable style={styles.listItem}>
+        <Pressable onPress={onPress} style={styles.listItem}>
             <View>
                 <Image source={getSource(audio.poster)} style={styles.poster} />
                 <PlayAnimation visible={isPlaying} />
