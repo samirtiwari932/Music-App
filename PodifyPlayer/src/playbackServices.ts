@@ -1,3 +1,4 @@
+import {getClient} from 'src/api/client';
 import TrackPlayer, {Event} from 'react-native-track-player';
 
 const playbackService = async () => {
@@ -13,10 +14,18 @@ const playbackService = async () => {
   TrackPlayer.addEventListener(Event.RemotePrevious, () => {
     TrackPlayer.skipToPrevious();
   });
-  TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, e => {
-    {
-      console.log(e);
-    }
+  TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, async e => {
+    const lists = await TrackPlayer.getQueue();
+    const audio = lists[e.track];
+
+    const client = await getClient();
+    await client
+      .post('/history', {
+        audio: audio.id,
+        progress: e.position,
+        date: new Date(Date.now()),
+      })
+      .catch(err => console.log(err));
   });
 };
 
