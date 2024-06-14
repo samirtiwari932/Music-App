@@ -11,6 +11,16 @@ export interface CreatePlayListRequest extends Request {
     visibility: "public" | "private";
   };
 }
+export interface HistoryType {
+  date: string;
+  audios: {
+    audioId: string;
+    date: Date;
+    id: string;
+    title: string;
+  }[];
+}
+
 export interface updatePlayListRequest extends Request {
   body: {
     title: string;

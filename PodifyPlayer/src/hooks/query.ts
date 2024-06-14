@@ -1,3 +1,4 @@
+import {HistoryType} from './../../../server/src/@types/audio';
 import {PlayListInfo} from '@components/form/PlayListForm';
 import {useQueries, useQuery} from 'react-query';
 import {useDispatch} from 'react-redux';
@@ -85,6 +86,21 @@ export const useFetchFavorite = () => {
   const dispatch = useDispatch();
   return useQuery(['favorite'], {
     queryFn: fetchFavorites,
+    onError(err) {
+      const errorMessage = catchAsyncError(err);
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
+    },
+  });
+};
+const fetchHistories = async (): Promise<HistoryType[]> => {
+  const client = await getClient();
+  const {data} = await client('/history');
+  return data.histories;
+};
+export const useFetchHistories = () => {
+  const dispatch = useDispatch();
+  return useQuery(['histories'], {
+    queryFn: fetchHistories,
     onError(err) {
       const errorMessage = catchAsyncError(err);
       dispatch(updateNotification({message: errorMessage, type: 'error'}));
