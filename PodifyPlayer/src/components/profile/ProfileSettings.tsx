@@ -16,6 +16,7 @@ import deepEqual from 'deep-equal'
 import ImagePicker from 'react-native-image-crop-picker';
 import { getPremissionToReadImages } from 'src/utilis/helper'
 import ReVerificationLink from '@components/ReVerificationLink'
+import MaterialComIcon from "react-native-vector-icons/MaterialCommunityIcons"
 
 
 interface Props { }
@@ -132,21 +133,32 @@ const ProfileSettings = (props: Props) => {
                 </View>
             </View>
             <View style={styles.titleContainer}>
+                <Text style={styles.title}>History</Text>
+            </View>
+
+            <View style={styles.settingOptionsContainer}>
+                <Pressable
+                    style={styles.buttonContainer}>
+                    <MaterialComIcon name='broom' size={20} color={colors.CONTRAST} />
+                    <Text style={styles.buttonTitle}>Clear All</Text>
+                </Pressable>
+            </View>
+            <View style={styles.titleContainer}>
                 <Text style={styles.title}>LogOut</Text>
             </View>
 
             <View style={styles.settingOptionsContainer}>
                 <Pressable
                     onPress={() => handleLogOut(true)}
-                    style={styles.logoutBtn}>
+                    style={styles.buttonContainer}>
                     <AntDesign name='logout' size={20} color={colors.CONTRAST} />
-                    <Text style={styles.logoutBtnTitle}>LogOut from All</Text>
+                    <Text style={styles.buttonTitle}>LogOut from All</Text>
                 </Pressable>
                 <Pressable
                     onPress={() => handleLogOut(false)}
-                    style={styles.logoutBtn}>
+                    style={styles.buttonContainer}>
                     <AntDesign name='logout' size={20} color={colors.CONTRAST} />
-                    <Text style={styles.logoutBtnTitle}>LogOut </Text>
+                    <Text style={styles.buttonTitle}>LogOut </Text>
                 </Pressable>
             </View>
             {!isSame ?
@@ -204,12 +216,12 @@ const styles = StyleSheet.create({
         color: colors.CONTRAST,
         marginRight: 10
     },
-    logoutBtn: {
+    buttonContainer: {
         flexDirection: "row",
         alignItems: "center",
         marginTop: 15
     },
-    logoutBtnTitle: {
+    buttonTitle: {
         color: colors.CONTRAST,
         fontSize: 18,
         marginLeft: 5

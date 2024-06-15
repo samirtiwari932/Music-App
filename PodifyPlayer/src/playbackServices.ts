@@ -1,4 +1,3 @@
-import {time} from 'console';
 import {getClient} from 'src/api/client';
 import TrackPlayer, {Event} from 'react-native-track-player';
 let timeOutId: ReturnType<typeof setTimeout> | null = null;
