@@ -6,10 +6,27 @@ import EmptyRecords from '@ui/EmptyRecords'
 import colors from 'src/utilis/color'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import AudioListLoadingUI from '@ui/AudioListLoadingUI'
+import { getClient } from 'src/api/client'
+import { useQueryClient } from 'react-query'
+import { historyAudio } from '../../../../server/src/@types/audio'
 
 interface Props { }
 const HistoryTab = (props: Props) => {
     const { data, isLoading } = useFetchHistories()
+
+    const queryClient = useQueryClient()
+
+
+    const removeHistories = async (histories: string[]) => {
+        const client = await getClient()
+        await client.delete('/history?histories=' + JSON.stringify(histories))
+        queryClient.invalidateQueries({ queryKey: ['histories'] })
+
+    }
+
+    const handleSingleHistoryRemove = async (history: historyAudio) => {
+        await removeHistories([history.id])
+    }
 
     if (isLoading) return <AudioListLoadingUI />
 
@@ -30,7 +47,7 @@ const HistoryTab = (props: Props) => {
                                 <Text style={styles.historyTitle}>
                                     {audio.title}
                                 </Text>
-                                <Pressable>
+                                <Pressable onPress={() => handleSingleHistoryRemove(audio)}>
                                     <AntDesign name="close" color={colors.CONTRAST} />
                                 </Pressable>
                             </View>

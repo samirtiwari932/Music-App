@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, TextInput, PermissionsAndroid } from 'react-native'
+import { View, Text, StyleSheet, Pressable, TextInput, PermissionsAndroid, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import colors from 'src/utilis/color'
 import AppHeaders from '@components/AppHeaders'
@@ -17,6 +17,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { getPremissionToReadImages } from 'src/utilis/helper'
 import ReVerificationLink from '@components/ReVerificationLink'
 import MaterialComIcon from "react-native-vector-icons/MaterialCommunityIcons"
+import { useQueryClient } from 'react-query'
 
 
 interface Props { }
@@ -31,6 +32,7 @@ const ProfileSettings = (props: Props) => {
     const [busy, setBusy] = useState(false)
     const dispatch = useDispatch()
     const { profile } = useSelector(getAuthState)
+    const queryClient = useQueryClient()
 
     const isSame = deepEqual(userInfo, {
         name: profile?.name,
@@ -98,6 +100,47 @@ const ProfileSettings = (props: Props) => {
         }
     }
 
+    const clearHistory = async () => {
+        console.log("Clearing history")
+        try {
+            const client = await getClient();
+            await client.delete('/history?all=yes');
+            queryClient.invalidateQueries({ queryKey: ['histories'] });
+            dispatch(updateNotification({
+                message: 'History cleared!',
+                type: 'success'
+            }));
+        } catch (error) {
+            const errorMessage = catchAsyncError(error)
+            dispatch(updateNotification({
+                message: errorMessage,
+                type: 'error'
+            }));
+        }
+    };
+
+
+    const handleOnHistoryClear = () => {
+        Alert.alert("Are you sure ?", "This action will clear out all the history!", [
+            {
+                text: "Clear",
+                style: "destructive",
+                onPress() {
+                    clearHistory()
+                }
+            },
+            {
+                text: "Cancel",
+                style: "cancel",
+
+            },
+
+        ],
+            {
+                cancelable: true
+            }
+        )
+    }
 
     useEffect(() => {
         if (profile) setUserInfo({
@@ -138,6 +181,7 @@ const ProfileSettings = (props: Props) => {
 
             <View style={styles.settingOptionsContainer}>
                 <Pressable
+                    onPress={handleOnHistoryClear}
                     style={styles.buttonContainer}>
                     <MaterialComIcon name='broom' size={20} color={colors.CONTRAST} />
                     <Text style={styles.buttonTitle}>Clear All</Text>

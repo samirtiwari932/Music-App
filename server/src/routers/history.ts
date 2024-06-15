@@ -7,7 +7,7 @@ import {Router} from "express";
 const router = Router();
 
 router.post("/", mustAuth, validate(updateHistorySchema), updateHistory);
-router.delete("/remove", mustAuth, removeHistory);
+router.delete("/", mustAuth, removeHistory);
 router.get("/", mustAuth, getHistories);
 router.get("/recently-played", mustAuth, getRecentlyPlayed);
 
