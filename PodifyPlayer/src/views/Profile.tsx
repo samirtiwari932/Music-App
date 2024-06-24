@@ -10,6 +10,7 @@ import colors from 'src/utilis/color';
 import { useSelector } from 'react-redux';
 import { getAuthState } from 'src/store/auth';
 import ProfileContainer from '@components/ProfileContainer';
+import AppView from '@components/AppView';
 
 interface Props { }
 
@@ -18,20 +19,23 @@ const Profile = (props: Props) => {
 
 
     const { profile } = useSelector(getAuthState)
-    return <View style={styles.container} >
-        <ProfileContainer profile={profile} />
-        <Tab.Navigator screenOptions={
-            {
-                tabBarStyle: styles.tabBarStyle,
-                tabBarLabelStyle: styles.tabBarLabelStyle
-            }
-        }>
-            <Tab.Screen name="Upload" component={UploadTabs} />
-            <Tab.Screen name="Playlist" component={PlayListTab} />
-            <Tab.Screen name="Favorite" component={FavoriteTab} />
-            <Tab.Screen name="History" component={HistoryTab} />
-        </Tab.Navigator>
-    </View>
+    return <AppView>
+        <View style={styles.container} >
+            <ProfileContainer profile={profile} />
+            <Tab.Navigator screenOptions={
+                {
+                    tabBarStyle: styles.tabBarStyle,
+                    tabBarLabelStyle: styles.tabBarLabelStyle
+                }
+            }>
+                <Tab.Screen name="Upload" component={UploadTabs} />
+                <Tab.Screen name="Playlist" component={PlayListTab} />
+                <Tab.Screen name="Favorite" component={FavoriteTab} />
+                <Tab.Screen name="History" component={HistoryTab} />
+            </Tab.Navigator>
+        </View>
+    </AppView>
+
 }
 
 const styles = StyleSheet.create({
