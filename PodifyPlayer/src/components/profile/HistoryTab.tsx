@@ -1,79 +1,122 @@
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native'
-import React from 'react'
-import { useFetchHistories } from 'src/hooks/query'
-import { string } from 'yup'
-import EmptyRecords from '@ui/EmptyRecords'
-import colors from 'src/utilis/color'
-import AntDesign from 'react-native-vector-icons/AntDesign'
-import AudioListLoadingUI from '@ui/AudioListLoadingUI'
-import { getClient } from 'src/api/client'
-import { useQueryClient } from 'react-query'
-import { historyAudio } from '../../../../server/src/@types/audio'
+import AudioListLoadingUI from '@ui/AudioListLoadingUI';
+import EmptyRecords from '@ui/EmptyRecords';
+import { FC, useState } from 'react';
+import { View, StyleSheet, Text, Pressable, ScrollView } from 'react-native';
+import { useFetchHistories } from 'src/hooks/query';
+import AntDesing from 'react-native-vector-icons/AntDesign';
+import { getClient } from 'src/api/client';
+import { useQueryClient } from 'react-query';
+import { historyAudio } from '../../../../server/src/@types/audio';
+import colors from 'src/utilis/color';
 
 interface Props { }
-const HistoryTab = (props: Props) => {
-    const { data, isLoading } = useFetchHistories()
 
-    const queryClient = useQueryClient()
-
+const HistoryTab: FC<Props> = props => {
+    const { data, isLoading } = useFetchHistories();
+    const queryClient = useQueryClient();
+    const [selectedHistories, setSelectedHistories] = useState<string[]>([]);
 
     const removeHistories = async (histories: string[]) => {
-        const client = await getClient()
-        await client.delete('/history?histories=' + JSON.stringify(histories))
-        queryClient.invalidateQueries({ queryKey: ['histories'] })
-
-    }
+        const client = await getClient();
+        await client.delete('/history?histories=' + JSON.stringify(histories));
+        queryClient.invalidateQueries({ queryKey: ['histories'] });
+    };
 
     const handleSingleHistoryRemove = async (history: historyAudio) => {
-        await removeHistories([history.id])
-    }
+        await removeHistories([history.id]);
+    };
 
-    if (isLoading) return <AudioListLoadingUI />
+    const handleMultipleHistoryRemove = async () => {
+        setSelectedHistories([]);
+        await removeHistories([...selectedHistories]);
+    };
+
+    const handleOnLongPress = (history: historyAudio) => {
+        setSelectedHistories([history.id]);
+    };
+
+    const handleOnPress = (history: historyAudio) => {
+        setSelectedHistories(old => {
+            if (old.includes(history.id)) {
+                return old.filter(item => item !== history.id);
+            }
+
+            return [...old, history.id];
+        });
+    };
+
+    if (isLoading) return <AudioListLoadingUI />;
 
     if (!data || !data[0]?.audios.length)
-        return <EmptyRecords title='There is no history  ' />
+        return <EmptyRecords title="There is no history!" />;
 
     return (
-        <ScrollView style={styles.container}>
-            {data.map((item, index) => {
-                return <View key={item.date + index}>
-
-                    <Text style={styles.date}>
-                        {item.date}
-                    </Text>
-                    <View style={styles.listContainer}>
-                        {item.audios.map((audio, i) => {
-                            return <View key={audio.id + i} style={styles.history}>
-                                <Text style={styles.historyTitle}>
-                                    {audio.title}
-                                </Text>
-                                <Pressable onPress={() => handleSingleHistoryRemove(audio)}>
-                                    <AntDesign name="close" color={colors.CONTRAST} />
-                                </Pressable>
+        <>
+            {selectedHistories.length ? (
+                <Pressable
+                    onPress={handleMultipleHistoryRemove}
+                    style={styles.removeBtn}>
+                    <Text style={styles.removeBtnText}>Remove</Text>
+                </Pressable>
+            ) : null}
+            <ScrollView style={styles.container}>
+                {data.map((item, mainIndex) => {
+                    return (
+                        <View key={item.date + mainIndex}>
+                            <Text style={styles.date}>{item.date}</Text>
+                            <View style={styles.listContainer}>
+                                {item.audios.map((audio, index) => {
+                                    return (
+                                        <Pressable
+                                            onLongPress={() => handleOnLongPress(audio)}
+                                            onPress={() => handleOnPress(audio)}
+                                            key={audio.id + index}
+                                            style={[
+                                                styles.history,
+                                                {
+                                                    backgroundColor: selectedHistories.includes(audio.id)
+                                                        ? colors.INACTIVE_CONTRAST
+                                                        : colors.OVERLAY,
+                                                },
+                                            ]}>
+                                            <Text style={styles.historyTitle}>{audio.title}</Text>
+                                            <Pressable
+                                                onPress={() => handleSingleHistoryRemove(audio)}>
+                                                <AntDesing name="close" color={colors.CONTRAST} />
+                                            </Pressable>
+                                        </Pressable>
+                                    );
+                                })}
                             </View>
-                        })}
-                    </View>
-
-                </View>
-            })}
-        </ScrollView>
-    )
-}
+                        </View>
+                    );
+                })}
+            </ScrollView>
+        </>
+    );
+};
 
 const styles = StyleSheet.create({
     container: {},
+    removeBtn: {
+        padding: 10,
+        alignSelf: 'flex-end',
+    },
+    removeBtnText: {
+        color: colors.CONTRAST,
+    },
     listContainer: {
         marginTop: 10,
-        paddingLeft: 10
+        paddingLeft: 10,
     },
     date: {
-        color: colors.SECONDARY
+        color: colors.SECONDARY,
     },
     historyTitle: {
         color: colors.CONTRAST,
         paddingHorizontal: 5,
-        fontWeight: "700",
-        flex: 1
+        fontWeight: '700',
+        flex: 1,
     },
     history: {
         flexDirection: 'row',
@@ -81,8 +124,8 @@ const styles = StyleSheet.create({
         backgroundColor: colors.OVERLAY,
         padding: 10,
         borderRadius: 5,
-        marginBottom: 10
-    }
-})
+        marginBottom: 10,
+    },
+});
 
-export default HistoryTab 
+export default HistoryTab;

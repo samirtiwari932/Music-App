@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 import React from 'react'
-import { ScrollView } from 'react-native-gesture-handler'
+import { ScrollView } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import colors from 'src/utilis/color'
 import AppLink from '@ui/AppLink'

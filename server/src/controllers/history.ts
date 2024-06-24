@@ -80,7 +80,7 @@ export const removeHistory: RequestHandler = async (req, res) => {
   await History.findOneAndUpdate(
     {owner: req.user.id},
     {
-      $pull: {all: {_ids: ids}},
+      $pull: {all: {_id: ids}},
     }
   );
 
