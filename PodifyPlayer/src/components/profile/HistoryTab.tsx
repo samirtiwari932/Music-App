@@ -5,10 +5,11 @@ import { View, StyleSheet, Text, Pressable, ScrollView } from 'react-native';
 import { useFetchHistories } from 'src/hooks/query';
 import AntDesing from 'react-native-vector-icons/AntDesign';
 import { getClient } from 'src/api/client';
-import { useQueryClient } from 'react-query';
-import { historyAudio } from '../../../../server/src/@types/audio';
+import { useMutation, useQueryClient } from 'react-query';
+import { HistoryType, historyAudio } from '../../../../server/src/@types/audio';
 import colors from 'src/utilis/color';
 import { useNavigation } from '@react-navigation/native';
+
 
 interface Props { }
 
@@ -17,6 +18,21 @@ const HistoryTab: FC<Props> = props => {
     const queryClient = useQueryClient();
     const [selectedHistories, setSelectedHistories] = useState<string[]>([]);
 
+    const removeMutate = useMutation({
+        mutationFn: async (histories) => removeHistories(histories),
+        onMutate: (histories: string[]) => {
+            queryClient.setQueryData<HistoryType[]>(['histories'], (oldData) => {
+                let newData: HistoryType[] = []
+                if (!oldData) return newData
+
+                for (let data of oldData) {
+                    const filterData = data.audios.filter(item => !histories.includes(item.id))
+                    if (filterData.length) newData.push({ date: data.date, audios: filterData })
+                }
+                return newData
+            })
+        }
+    })
     const navigation = useNavigation()
 
     const removeHistories = async (histories: string[]) => {
@@ -26,12 +42,12 @@ const HistoryTab: FC<Props> = props => {
     };
 
     const handleSingleHistoryRemove = async (history: historyAudio) => {
-        await removeHistories([history.id]);
+        removeMutate.mutate([history.id])
     };
 
     const handleMultipleHistoryRemove = async () => {
         setSelectedHistories([]);
-        await removeHistories([...selectedHistories]);
+        removeMutate.mutate([...selectedHistories])
     };
 
     const handleOnLongPress = (history: historyAudio) => {
