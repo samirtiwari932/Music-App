@@ -5,6 +5,7 @@ import OptionsModal from '@components/OptionsModal';
 import PlayListModal from '@components/PlayListModal';
 import RecentlyPlayed from '@components/RecentlyPlayed';
 import RecommendedAudios from '@components/RecommendedAudios';
+import RecommendedPlaylist from '@components/RecommendedPlaylist';
 import PlayListForm, { PlayListInfo } from '@components/form/PlayListForm';
 import { FC, useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
@@ -116,6 +117,7 @@ const Home: FC<Props> = props => {
     return (
         <AppView>
             <ScrollView contentContainerStyle={styles.container}>
+                <RecommendedPlaylist />
                 <RecentlyPlayed />
                 <LatestUpload
                     onAudioPress={onAudioPress}
